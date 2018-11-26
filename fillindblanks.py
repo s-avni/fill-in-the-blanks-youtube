@@ -74,9 +74,9 @@ def generate_fillindblanks(yt_link, lang_initials, skip, output_file=None):
         with open(pth, "r") as fh:
             captions = fh.readlines()
 
-        captions_blanks, solutions = generate_caption_blanks(captions)
+        captions_blanks, solutions = generate_caption_blanks(captions, skip)
         print(captions_blanks)
-        pdf = generate_fidb_pdf(yt_video_title, captions_blanks, solutions)
+        pdf = generate_fidb_pdf(yt_video_title, yt_link, captions_blanks, solutions)
 
         if output_file is not None:
             pdf.output(output_file)
@@ -88,7 +88,7 @@ def generate_fillindblanks(yt_link, lang_initials, skip, output_file=None):
             os.remove(cpth)
 
 
-def generate_caption_blanks(captions):
+def generate_caption_blanks(captions, skip):
     '''
     TODO:
     '''
@@ -131,7 +131,7 @@ def generate_caption_blanks(captions):
 
 
 
-def generate_fidb_pdf(yt_video_title, captions_blanks, solutions):
+def generate_fidb_pdf(yt_video_title, yt_link, captions_blanks, solutions):
     '''
     TODO:
     '''
