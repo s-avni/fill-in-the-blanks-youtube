@@ -1,0 +1,3 @@
+https://github.com/reingart/pyfpdf/releases/download/binary/fpdf_unicode_font_pack.zip
+
+Make sure the folder is copied / softlinked to the fpdf's directory.

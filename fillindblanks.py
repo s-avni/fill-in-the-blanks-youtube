@@ -28,89 +28,64 @@ def parse_args():
                         help="integer n such that every nth word is left blank")
     parser.add_argument("-o", "--output", type=str, required=False,
                         help="path to output the PDF to.")
+    parser.add_argument("-t", "--type", type=str, required=False, default="pdf",
+                        choices=["pdf", "plaintext"], help="output file type")
     args = parser.parse_args()
 
     assert args.skip >= 1
 
     return args
 
+
 def youtube_download_subs(yt_link, lang_initials):
-    ydl_opts = {"skip_download" : True,
-                "writesubtitles" : True}
-    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        info = ydl.extract_info(yt_link)
-        title = info['title']
-        video_id = info["id"]
-        subtitle_dict = info["subtitles"]
-        #get the plain link of subtitles
-        desired_subtitles_link = subtitle_dict[lang_initials][1]['url']
-        print(desired_subtitles_link)
+    try:
+        ydl_opts = {"skip_download" : True,
+                    "writesubtitles" : True}
+        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(yt_link, download=False)
+            title = info['title']
+            subtitle_dict = info["subtitles"]
+            #get the plain link of subtitles
+            desired_subtitles_link = subtitle_dict[lang_initials][1]['url']
+            print(desired_subtitles_link)
 
-        opener = urllib.request.FancyURLopener({})
-        url = desired_subtitles_link
-        f = opener.open(url)
-        content = f.read()
-        content = content.decode("utf-8") #decode to utf-8 (originally in bytes)
-        content = content.splitlines()
+            tmp_file, _ = urllib.request.urlretrieve(desired_subtitles_link)
+            with open(tmp_file) as f:
+                content = f.read()
 
-        return title, content
+            # content = content.decode("utf-8") #decode to utf-8 (originally in bytes)
+            content = content.splitlines()
+    finally:
+        urllib.request.urlcleanup()
+
+    return title, content
 
 
-def generate_fillindblank(yt_link, lang_initials, skip, output_file=None):
+def generate_fillindblanks(yt_link, lang_initials, skip, output_file=None, output_type="pdf"):
     '''
     TODO:
     '''
-
-    # TODO: a better solution (not using import though); can most likely be improved on
-    # TODO: upgrade to using import - https://github.com/rg3/youtube-dl/blob/master/README.md#readme
     yt_video_title, captions = youtube_download_subs(yt_link, lang_initials)
 
     clean_captions = generate_clean_solution(captions)
     captions_blanks = generate_caption_blanks(clean_captions, skip)
     print(captions_blanks[:50]) #todo: assumes length is > 50...change to logging and check
-    pdf = generate_fidb_pdf(yt_video_title, yt_link, captions_blanks, clean_captions)
 
-    if output_file is not None:
-        pdf.output(output_file)
-    else:
-        return pdf
-
-
-def generate_fillindblanks(yt_link, lang_initials, skip, output_file=None):
-    '''
-    TODO:
-    '''
-    captions_pths = []
-    try:
-        # TODO: upgrade to using import - https://github.com/rg3/youtube-dl/blob/master/README.md#readme
-        output = youtube_download_subs(yt_link, lang_initials)
-
-        # open the desired (=most recent) vtt captions file
-        captions_pths = [f for f in os.listdir('.')
-                         if os.path.isfile(f) and f.endswith("vtt")]
-        captions_pths = sorted(captions_pths, key=lambda p: os.path.getmtime(p))
-        logging.info(captions_pths)
-        pth = captions_pths[0]
-
-        yt_video_title = os.path.basename(pth).split(".")[0][1:] #weird ' gets appended
-
-        with open(pth, "r") as fh:
-            captions = fh.readlines()
-
-        #todo: good from here!
-        clean_captions = generate_clean_solution(captions)
-        captions_blanks = generate_caption_blanks(clean_captions, skip)
-        print(captions_blanks[:50]) #todo: assumes length is > 50...change to logging and check
+    if (output_type == "pdf"):
         pdf = generate_fidb_pdf(yt_video_title, yt_link, captions_blanks, clean_captions)
 
         if output_file is not None:
             pdf.output(output_file)
         else:
             return pdf
-    finally:
-        #delete the vtt files
-        for cpth in captions_pths:
-            os.remove(cpth)
+    elif (output_type == "plaintext"):
+        output = "worksheet:\n{}\n\n\nsolutions:{}".format(captions_blanks,
+                                                           clean_captions)
+        if output_file is not None:
+            with open(output_file, "w") as output_file:
+                output_file.write(output)
+        else:
+            return output
 
 def generate_clean_solution(captions):
     '''
@@ -165,14 +140,19 @@ def generate_caption_blanks(captions, skip):
 def generate_fidb_pdf(yt_video_title, yt_link, captions_blanks, solutions):
     '''
     @summary: creates exercise pdf including link to video_title, exercise, and solution
+    TODO: Handle language specific fonts https://pyfpdf.readthedocs.io/en/latest/Unicode/index.html
     '''
     #create pdf
     pdf = FPDF() #default: Portrait, A4, millimeter unit
     #pdf.set_right_margin(20)
     pdf.add_page()
-    pdf.set_font("Arial", "B", size=14)
+    pdf.add_font('DejaVu', '',
+                 '{}/fonts/DejaVuSansCondensed.ttf'.format(
+                     "/home/VehpuS/filindblanks" #os.path.dirname(os.path.realpath(__file__))
+                 ), uni=True)
 
     #video title and fill in blanks on first page
+    pdf.set_font('Arial', 'B', 14)
     pdf.cell(w=200, h=10,
              txt="Fill-in-the-blanks exercise!",
              ln=1, align="C")
@@ -181,20 +161,20 @@ def generate_fidb_pdf(yt_video_title, yt_link, captions_blanks, solutions):
              ln=1, align="C")
 
     pdf.set_text_color(0, 0, 255)
-    pdf.cell(w=200, h=10, txt=yt_video_title,
+    pdf.cell(w=200, h=10, txt=(yt_video_title),
              link=yt_link, ln=1, align="C")
     pdf.set_text_color(0,0,0)
 
-    pdf.set_font("Arial", size=12)
-    pdf.multi_cell(w=0, h=10, border=1, txt=captions_blanks)
+    pdf.set_font("DejaVu", size=12)
+    pdf.multi_cell(w=0, h=10, border=1, txt=(captions_blanks))
 
     #solutions on second page
     pdf.add_page()
     pdf.set_font("Arial", "B", size=14)
     pdf.cell(w=200, h=10, txt="Solution:", ln=1, align="C")
 
-    pdf.set_font("Arial", size=12)
-    pdf.multi_cell(w=0, h=10, border=1, txt=solutions)
+    pdf.set_font("DejaVu", size=12)
+    pdf.multi_cell(w=0, h=10, border=1, txt=(solutions))
 
     return pdf
 
@@ -204,6 +184,7 @@ if __name__ == '__main__':
     skip=args.skip
     yt_link = args.youtube_link #"https://www.youtube.com/watch?v=cLuvtesdyJw"
     lang_initials = args.language_initials
-    output = args.output if hasattr(args, "output") else None #todo: why not current directory if no attr?
-    generate_fillindblanks(yt_link, lang_initials, skip, output)
+    output = args.output if hasattr(args, "output") else None
+    output_type = args.type
+    generate_fillindblanks(yt_link, lang_initials, skip, output, output_type)
 
