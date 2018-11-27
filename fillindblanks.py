@@ -12,6 +12,8 @@ import logging
 import os
 import argparse
 import traceback
+import youtube_dl
+import urllib.request
 
 def parse_args():
     '''
@@ -32,25 +34,46 @@ def parse_args():
 
     return args
 
-
 def youtube_download_subs(yt_link, lang_initials):
-    #download the vtt captions file
-    command = 'youtube-dl --write-sub --skip-download ' \
-              + yt_link \
-              + " --sub-lang " \
-              + lang_initials \
-              + " -o '%(title)s.%(ext)s'"
-    process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
-    output, error = process.communicate()
+    ydl_opts = {"skip_download" : True,
+                "writesubtitles" : True}
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        info = ydl.extract_info(yt_link)
+        title = info['title']
+        video_id = info["id"]
+        subtitle_dict = info["subtitles"]
+        #get the plain link of subtitles
+        desired_subtitles_link = subtitle_dict[lang_initials][1]['url']
+        print(desired_subtitles_link)
 
-    if error is not None:
-        print("Error occured!")
-        print(error)
-        traceback.print_exc()
-        raise Exception(error)
+        opener = urllib.request.FancyURLopener({})
+        url = desired_subtitles_link
+        f = opener.open(url)
+        content = f.read()
+        content = content.decode("utf-8") #decode to utf-8 (originally in bytes)
+        content = content.splitlines()
 
-    logging.info(output)
-    return output
+        return title, content
+
+
+def generate_fillindblank(yt_link, lang_initials, skip, output_file=None):
+    '''
+    TODO:
+    '''
+
+    # TODO: a better solution (not using import though); can most likely be improved on
+    # TODO: upgrade to using import - https://github.com/rg3/youtube-dl/blob/master/README.md#readme
+    yt_video_title, captions = youtube_download_subs(yt_link, lang_initials)
+
+    clean_captions = generate_clean_solution(captions)
+    captions_blanks = generate_caption_blanks(clean_captions, skip)
+    print(captions_blanks[:50]) #todo: assumes length is > 50...change to logging and check
+    pdf = generate_fidb_pdf(yt_video_title, yt_link, captions_blanks, clean_captions)
+
+    if output_file is not None:
+        pdf.output(output_file)
+    else:
+        return pdf
 
 
 def generate_fillindblanks(yt_link, lang_initials, skip, output_file=None):
@@ -74,9 +97,11 @@ def generate_fillindblanks(yt_link, lang_initials, skip, output_file=None):
         with open(pth, "r") as fh:
             captions = fh.readlines()
 
-        captions_blanks, solutions = generate_caption_blanks(captions, skip)
-        print(captions_blanks)
-        pdf = generate_fidb_pdf(yt_video_title, yt_link, captions_blanks, solutions)
+        #todo: good from here!
+        clean_captions = generate_clean_solution(captions)
+        captions_blanks = generate_caption_blanks(clean_captions, skip)
+        print(captions_blanks[:50]) #todo: assumes length is > 50...change to logging and check
+        pdf = generate_fidb_pdf(yt_video_title, yt_link, captions_blanks, clean_captions)
 
         if output_file is not None:
             pdf.output(output_file)
@@ -87,27 +112,33 @@ def generate_fillindblanks(yt_link, lang_initials, skip, output_file=None):
         for cpth in captions_pths:
             os.remove(cpth)
 
-
-def generate_caption_blanks(captions, skip):
+def generate_clean_solution(captions):
     '''
-    TODO:
+    @summary: returns clean solution string from captions vtt file
+    :param captions:
+    :return:
     '''
-
-    #remove first 4 lines, which includes metadata
+    # remove first 4 lines, which includes metadata
     captions = captions[4:]
-    #remove all timestamp lines, i.e lines including the symbol "-->"
+    # remove all timestamp lines, i.e lines including the symbol "-->"
     captions = [l for l in captions if "-->" not in l]
-    #replace all \n in end of sentences with ""
+    # replace all \n in end of sentences with ""
     captions = [l.replace('\n', '') for l in captions]
-    #remove all lines which are blank
+    # remove all lines which are blank
     captions = [l for l in captions if len(l) > 0]
-    #combine list into one string
+    # combine list into one string
     captions = " ".join(captions)
-    solutions = captions
 
     logging.info("First 20 characters of captions")
     logging.info(captions[:20])
 
+    return captions
+
+
+def generate_caption_blanks(captions, skip):
+    '''
+    @summary: creates exercise string with blanks from the solution string
+    '''
     #remove every xth word, using variable "skip"
     words = captions.split(" ")
     #remove all empty words
@@ -127,13 +158,13 @@ def generate_caption_blanks(captions, skip):
             logging.error("Failed on word {}/{}: '{}'".format(i, len(words), w))
             raise
 
-    return " ".join(captions_blanks), solutions
+    return " ".join(captions_blanks)
 
 
 
 def generate_fidb_pdf(yt_video_title, yt_link, captions_blanks, solutions):
     '''
-    TODO:
+    @summary: creates exercise pdf including link to video_title, exercise, and solution
     '''
     #create pdf
     pdf = FPDF() #default: Portrait, A4, millimeter unit
@@ -169,12 +200,10 @@ def generate_fidb_pdf(yt_video_title, yt_link, captions_blanks, solutions):
 
 
 if __name__ == '__main__':
-    #command line arguments
     args = parse_args()
     skip=args.skip
     yt_link = args.youtube_link #"https://www.youtube.com/watch?v=cLuvtesdyJw"
     lang_initials = args.language_initials
-    output = args.output if hasattr(args, "output") else None
+    output = args.output if hasattr(args, "output") else None #todo: why not current directory if no attr?
     generate_fillindblanks(yt_link, lang_initials, skip, output)
-
 
