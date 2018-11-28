@@ -7,11 +7,8 @@ The module can be run as a script from the commandline, passing in the youtube
 link you desire and the language caption that you want.
 """
 from fpdf import FPDF
-import subprocess
 import logging
-import os
 import argparse
-import traceback
 import youtube_dl
 import urllib.request
 
