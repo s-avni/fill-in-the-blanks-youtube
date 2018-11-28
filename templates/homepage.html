@@ -1,0 +1,45 @@
+
+{% macro input(name, label, value='', type='text', size=20) -%}
+    <tr>
+        <td>
+            {{ label }}:
+        </td>
+        <td>
+            <input type="{{ type }}" name="{{ name }}" value="{{value|e }}" size="{{ size }}">
+        </td>
+    </tr>
+{%- endmacro %}
+
+
+        <!--name = request.form['name'] if 'name' in request.form else 'worksheet'-->
+        <!--yt_link = request.form['yt_link']-->
+        <!--lang_initials = request.form['lang_initials']-->
+        <!--skip = int(request.form['skip'])-->
+
+<form action='/get_worksheet' method="post">
+    <fieldset>
+        <table>
+            {{ input('name', label='File name', value='worksheet') }}
+            {{ input('yt_link', label='Link to YouTube video') }}
+            {{ input('lang_initials', label='Language code (e.g. "en")', value='en') }}
+            {{ input('skip', label='Skip after n words', value=4, type='number') }}
+            <!--{{ input('output_type', label='Output type ("pdf" or "plaintext")', value='pdf', type='number') }}-->
+            <tr>
+                <td>
+                    Output type:
+                </td>
+                <td>
+                    <select name="output_type" default="pdf">
+                      <option value="pdf">PDF</option>
+                      <option value="txt">Plaintext</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+
+    </fieldset>
+    <input type="submit">
+</form>
+
+
+<a href='/fidb_worksheet_test'>Try our our demo worksheet!</a>

@@ -29,7 +29,7 @@ def parse_args():
     parser.add_argument("-o", "--output", type=str, required=False,
                         help="path to output the PDF to.")
     parser.add_argument("-t", "--type", type=str, required=False, default="pdf",
-                        choices=["pdf", "plaintext"], help="output file type")
+                        choices=["pdf", "txt"], help="output file type")
     args = parser.parse_args()
 
     assert args.skip >= 1
@@ -78,8 +78,8 @@ def generate_fillindblanks(yt_link, lang_initials, skip, output_file=None, outpu
             pdf.output(output_file)
         else:
             return pdf
-    elif (output_type == "plaintext"):
-        output = "worksheet:\n{}\n\n\nsolutions:{}".format(captions_blanks,
+    elif (output_type == "txt"):
+        output = "worksheet:\n{}\n\n\nsolutions:\n{}".format(captions_blanks,
                                                            clean_captions)
         if output_file is not None:
             with open(output_file, "w") as output_file:
