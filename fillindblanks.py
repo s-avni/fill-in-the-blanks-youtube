@@ -12,6 +12,7 @@ import argparse
 import youtube_dl
 import urllib.request
 import captions as c
+import os
 
 def parse_args():
     '''
@@ -112,18 +113,10 @@ def generate_fidb_pdf(yt_video_title, yt_link, captions_blanks, solutions):
     pdf = FPDF() #default: Portrait, A4, millimeter unit
     #pdf.set_right_margin(20)
     pdf.add_page()
-
-    # todo: make dir independent
-    # pdf.add_font('DejaVu', '',
-    #              '{}/fonts/DejaVuSansCondensed.ttf'.format(
-    #                  "/home/shiri/PyCharmProjects/filindblanks" #os.path.dirname(os.path.realpath(__file__))
-    #              ), uni=True)
-
-    # pdf.add_font('DejaVu', '',
-    #              '{}/fonts/DejaVuSansCondensed.ttf'.format(
-    #                  "/home/shiri/PyCharmProjects/fillinblanks"  # os.path.dirname(os.path.realpath(__file__))
-    #              ), uni=True)
-
+    pdf.add_font('DejaVu', '',
+                 '{}/fonts/DejaVuSansCondensed.ttf'.format(
+                     os.path.dirname(os.path.realpath(__file__))
+                 ), uni=True)
 
     #video title and fill in blanks on first page
     pdf.set_font('Arial', 'B', 14)
