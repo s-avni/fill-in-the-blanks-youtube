@@ -11,6 +11,7 @@ import logging
 import argparse
 import youtube_dl
 import urllib.request
+import os
 
 def parse_args():
     '''
@@ -145,7 +146,7 @@ def generate_fidb_pdf(yt_video_title, yt_link, captions_blanks, solutions):
     pdf.add_page()
     pdf.add_font('DejaVu', '',
                  '{}/fonts/DejaVuSansCondensed.ttf'.format(
-                     "/home/VehpuS/filindblanks" #os.path.dirname(os.path.realpath(__file__))
+                     os.path.dirname(os.path.realpath(__file__))
                  ), uni=True)
 
     #video title and fill in blanks on first page
