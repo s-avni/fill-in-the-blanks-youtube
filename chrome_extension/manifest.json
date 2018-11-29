@@ -1,0 +1,29 @@
+{
+  "manifest_version": 2,
+
+  "name": "Fillin_Blanks",
+  "description": "This extension allows the user to generate language learning worksheets out of Youtube videos.",
+  "version": "1.0",
+  "browser_action": {
+    "default_icon": {
+            "16": "images/icon16.png",
+            "24": "images/icon24.png",
+            "32": "images/icon32.png"
+    },
+    "default_popup": "popup.html"
+  },
+  "icons": {
+    "16": "images/icon16.png",
+    "32": "images/icon32.png",
+    "48": "images/icon48.png"
+  },
+  "permissions": [
+    "activeTab",
+    "contextMenus",
+    "tabs",
+    "https://ajax.googleapis.com/",
+    "http://*/",
+    "https://*/"
+  ],
+  "minimum_chrome_version": "28"
+}
