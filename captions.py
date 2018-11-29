@@ -27,6 +27,7 @@ def generate_clean_solution(captions):
 
     return captions
 
+
 def generate_caption_blanks(captions, skip):
     '''
     @summary: creates exercise string with blanks from the solution string
