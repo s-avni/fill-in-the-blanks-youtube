@@ -1,0 +1,51 @@
+{% macro input(name, label, value='', type='text', size=20) -%}
+    <tr>
+        <td>
+            {{ label }}:
+        </td>
+        <td>
+            <input name="{{ name }}" size="{{ size }}" type="{{ type }}" value="{{value|e }}">
+        </td>
+    </tr>
+{%- endmacro %}
+
+
+<br />
+<br />
+
+<h1 style="text-align: center;"><span style="color: #0000ff;"><strong>Select captions and configure settings</strong></span></h1>
+
+
+<form style="text-align: center;" action='/get_worksheet' method="post">
+    <fieldset>
+        <table style="width: 30%;">
+            {{ input('name', label='File name', value='fill_in_blanks_sheet') }}
+            <tr>
+                <td>
+                    Caption language:
+                </td>
+                <td>
+                    <select name="language">
+                      {% for caption in captions %}
+                          <option value="{{caption}}">{{caption}}</option>
+                      {% endfor %}>
+                    </select>
+                </td>
+            </tr>
+            {{ input('skip', label='Skip every n words', value=4, type='number') }}
+            <tr>
+                <td>
+                    Output type:
+                </td>
+                <td>
+                    <select name="output_type" default="pdf">
+                      <option value="pdf">PDF</option>
+                      <option value="txt">Plaintext</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+
+    </fieldset>
+    <input type="Submit" value="Generate exercise sheet">
+</form>

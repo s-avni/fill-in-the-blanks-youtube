@@ -37,33 +37,43 @@ def parse_args():
     return args
 
 
-def generate_fillindblanks(yt_link, lang_initials, skip, output_file=None, output_type="pdf"):
-    '''
-    TODO:
-    '''
-    ydl_wrapper = yd.YDLWrapper(yt_link)
-    yt_video_title = ydl_wrapper.get_title()
-    captions = ydl_wrapper.download_captions(lang_initials)
-
+def generate_output(captions, yt_video_title, output_file, output_type, skip, yt_link):
     clean_captions = c.generate_clean_solution(captions)
     captions_blanks = c.generate_caption_blanks(clean_captions, skip)
-    print(captions_blanks[:50]) #todo: assumes length is > 50...change to logging and check
 
-    if (output_type == "pdf"):
+    if output_type == "pdf":
         pdf = generate_fidb_pdf(yt_video_title, yt_link, captions_blanks, clean_captions)
 
         if output_file is not None:
             pdf.output(output_file)
         else:
             return pdf
-    elif (output_type == "txt"):
-        output = "worksheet:\n{}\n\n\nsolutions:\n{}".format(captions_blanks,
-                                                           clean_captions)
+    elif output_type == "txt":
+        out = "worksheet:\n{}\n\n\nsolutions:\n{}".format(captions_blanks,
+                                                          clean_captions)
         if output_file is not None:
             with open(output_file, "w") as output_file:
-                output_file.write(output)
+                output_file.write(out)
         else:
-            return output
+            return out
+
+
+def generate_fillindblanks(link, language_initials, n_skip, output_file=None, output_type="pdf"):
+    '''
+    TODO:
+    '''
+    ydl_wrapper = yd.YDLWrapper(link)
+    yt_video_title = ydl_wrapper.get_title()
+    captions = ydl_wrapper.download_captions(language_initials)
+    return generate_output(captions, yt_video_title, output_file, output_type, n_skip, link)
+
+
+def generate_fillindblanks_given_language(ydl_wrapper, language, n_skip, output_file=None, output_type="pdf"):
+    yt_video_title = ydl_wrapper.get_title()
+    language_initials = c.get_initials(language)
+    captions = ydl_wrapper.download_captions(language_initials)
+    link = ydl_wrapper.get_link()
+    return generate_output(captions, yt_video_title, output_file, output_type, n_skip, link)
 
 
 def generate_fidb_pdf(yt_video_title, yt_link, captions_blanks, solutions):

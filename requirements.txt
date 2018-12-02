@@ -1,3 +1,4 @@
+pycountry
 Click==7.0
 Flask==1.0.2
 fpdf==1.7.2

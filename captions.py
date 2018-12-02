@@ -1,7 +1,9 @@
 import logging
 import re
+import pycountry
 
-#todo: add user option to remove words followed by :, e.g. when different users are speaking and their name is listed before their speech
+
+# todo: add user option to remove words followed by :, e.g. when different users are speaking and their name is listed before their speech
 def generate_clean_solution(captions):
     '''
     @summary: returns clean solution string from captions vtt file
@@ -32,13 +34,13 @@ def generate_caption_blanks(captions, skip):
     '''
     @summary: creates exercise string with blanks from the solution string
     '''
-    #remove every xth word, using variable "skip"
+    # remove every xth word, using variable "skip"
     words = captions.split(" ")
-    #remove all empty words
+    # remove all empty words
     words = [w for w in words if len(w) > 0]
     captions_blanks = []
-    blank="_________"
-    for i,w in enumerate(words, start=1): #don't want first word of captions missing
+    blank = "_________"
+    for i, w in enumerate(words, start=1):  # don't want first word of captions missing
         try:
             if i % skip != 0:
                 captions_blanks.append(w)
@@ -53,3 +55,30 @@ def generate_caption_blanks(captions, skip):
 
     return " ".join(captions_blanks)
 
+
+def map_initials_to_language_word(initials):
+    names = []
+    for initial in initials:
+        try:
+            if len(initial) == 2:
+                name = (pycountry.languages.get(alpha_2=initial)).name
+            elif len(initial) == 3:
+                name = (pycountry.languages.get(alpha_3=initial)).name
+            names.append(name) #todo: Moshe, how would you do this more correctly?
+        except KeyError as err:
+            print(err)
+    return names
+
+
+def get_initials(language):
+    possible_prefix = "(Automatic) "
+    if language.startswith(possible_prefix):
+        language = language[len(possible_prefix):]
+    lang_object = pycountry.languages.get(name=language)
+    try:
+        initial = lang_object.alpha_2
+    except AttributeError:
+        initial = lang_object.alpha_3
+    if initial is not None:
+        return initial
+    raise ValueError
