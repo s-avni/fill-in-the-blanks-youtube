@@ -14,6 +14,7 @@ import urllib.request
 import captions as c
 import os
 import youtube_download as yd
+from rtl import is_rtl, flip_rtl_string
 
 def parse_args():
     '''
@@ -37,12 +38,13 @@ def parse_args():
     return args
 
 
-def generate_output(captions, yt_video_title, output_file, output_type, skip, yt_link):
+def generate_output(captions, yt_video_title, output_file, output_type, skip, yt_link, RTL):
     clean_captions = c.generate_clean_solution(captions)
+    clean_captions = flip_rtl_string(clean_captions, RTL)
     captions_blanks = c.generate_caption_blanks(clean_captions, skip)
 
     if output_type == "pdf":
-        pdf = generate_fidb_pdf(yt_video_title, yt_link, captions_blanks, clean_captions)
+        pdf = generate_fidb_pdf(yt_video_title, yt_link, captions_blanks, clean_captions, RTL)
 
         if output_file is not None:
             pdf.output(output_file)
@@ -64,25 +66,30 @@ def generate_fillindblanks(link, language_initials, n_skip, output_file=None, ou
     '''
     ydl_wrapper = yd.YDLWrapper(link)
     yt_video_title = ydl_wrapper.get_title()
+    rtl = is_rtl(language_initials)
     captions = ydl_wrapper.download_captions(language_initials)
-    return generate_output(captions, yt_video_title, output_file, output_type, n_skip, link)
+    return generate_output(captions, yt_video_title, output_file, output_type, n_skip, link, RTL=rtl)
 
 
 def generate_fillindblanks_given_language(ydl_wrapper, language, n_skip, output_file=None, output_type="pdf"):
     yt_video_title = ydl_wrapper.get_title()
     language_initials = c.get_initials(language)
+    rtl = is_rtl(language_initials)
     captions = ydl_wrapper.download_captions(language_initials)
     link = ydl_wrapper.get_link()
-    return generate_output(captions, yt_video_title, output_file, output_type, n_skip, link)
+    return generate_output(captions, yt_video_title, output_file, output_type, n_skip, link, RTL=rtl)
 
 
-def generate_fidb_pdf(yt_video_title, yt_link, captions_blanks, solutions):
+def generate_fidb_pdf(yt_video_title, yt_link, captions_blanks, solutions, RTL):
     '''
     @summary: creates exercise pdf including link to video_title, exercise, and solution
     TODO: Handle language specific fonts https://pyfpdf.readthedocs.io/en/latest/Unicode/index.html
     '''
     #create pdf
+    alignment = "L" if RTL is False else "R"
+
     pdf = FPDF() #default: Portrait, A4, millimeter unit
+    pdf.compress = 0
     #pdf.set_right_margin(20)
     pdf.add_page()
     pdf.add_font('DejaVu', '',
@@ -99,13 +106,27 @@ def generate_fidb_pdf(yt_video_title, yt_link, captions_blanks, solutions):
              txt="Watch the following video and fill in the blanks:",
              ln=1, align="C")
 
+    # important!! keep dejavu font so that title can be outputted correctly!
+    # dejavu has no bold style
+    pdf.set_font("DejaVu", size=14)
+
     pdf.set_text_color(0, 0, 255)
-    pdf.cell(w=200, h=10, txt=(yt_video_title),
+
+    title_to_print = yt_video_title #todo: erase this fix, which limits to n letters
+    if len(title_to_print) > 30:
+        title_to_print = title_to_print[:30] + "..."
+
+    print(yt_video_title)
+    print(yt_video_title[:30])
+    #todo: add fix- cell should provide error if string width > cell width; can't use multicell, because multicell does not support http link
+    pdf.cell(w=200, h=10, txt=title_to_print,
              link=yt_link, ln=1, align="C")
+
     pdf.set_text_color(0,0,0)
 
     pdf.set_font("DejaVu", size=12)
-    pdf.multi_cell(w=0, h=10, border=1, txt=(captions_blanks))
+
+    pdf.multi_cell(w=0, h=10, border=1, txt=captions_blanks, align=alignment)
 
     #solutions on second page
     pdf.add_page()
@@ -113,7 +134,7 @@ def generate_fidb_pdf(yt_video_title, yt_link, captions_blanks, solutions):
     pdf.cell(w=200, h=10, txt="Solution:", ln=1, align="C")
 
     pdf.set_font("DejaVu", size=12)
-    pdf.multi_cell(w=0, h=10, border=1, txt=(solutions))
+    pdf.multi_cell(w=0, h=10, border=1, txt=solutions, align=alignment)
 
     return pdf
 

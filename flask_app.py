@@ -17,11 +17,9 @@ def generate_fibd_response_given_language(name, language, skip, output_type):
     result = generate_fillindblanks_given_language(YDL, language, skip, output_type=output_type)
     if output_type == 'pdf':
         pdf = result
-        #todo: moshe
-        #todo: https://stackoverflow.com/questions/10124786/flask-headers-are-not-converted-to-unicode
-        #todo: https://stackoverflow.com/questions/21818855/flask-handling-unicode-text-with-werkzeug
-        #todo: https://stackoverflow.com/questions/43365640/set-unicode-filename-in-flask-response-header
-        response = make_response(pdf.output(dest='S'))#.encode('latin-1')) #change to 'S'
+        pdf = pdf.output(dest='S')
+        pdf = pdf.encode('latin-1')
+        response = make_response(pdf)
         response.headers.set('Content-Type', 'application/pdf')
     elif output_type == 'txt':
         response = make_response(result)

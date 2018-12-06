@@ -2,6 +2,9 @@ import logging
 import re
 import pycountry
 
+#https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
+old_iso_639 = {"iw" : "Hebrew",
+               "ji" : "Yiddish"}
 
 # todo: add user option to remove words followed by :, e.g. when different users are speaking and their name is listed before their speech
 def generate_clean_solution(captions):
@@ -61,8 +64,8 @@ def map_initials_to_language_word(initials):
     for initial in initials:
         try:
             if len(initial) == 2:
-                if initial == "iw": #todo: settle the code language differences
-                    name = "Hebrew"
+                if initial in old_iso_639.keys():
+                    name = old_iso_639[initial]
                 else:
                     name = (pycountry.languages.get(alpha_2=initial)).name
             elif len(initial) == 3:
@@ -77,8 +80,8 @@ def get_initials(language):
     possible_prefix = "(Automatic) "
     if language.startswith(possible_prefix):
         language = language[len(possible_prefix):]
-    if language == "Hebrew": #because pycountry returns 'he' but fpdf returns 'iw' #fix sync!
-        return "iw"
+    if language in old_iso_639.values():
+        return [k for k,v in old_iso_639.items() if v == language][0]
     lang_object = pycountry.languages.get(name=language)
     try:
         initial = lang_object.alpha_2
