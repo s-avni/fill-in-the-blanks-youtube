@@ -21,7 +21,7 @@ def generate_fibd_response_given_language(name, language, skip, output_type):
         #todo: https://stackoverflow.com/questions/10124786/flask-headers-are-not-converted-to-unicode
         #todo: https://stackoverflow.com/questions/21818855/flask-handling-unicode-text-with-werkzeug
         #todo: https://stackoverflow.com/questions/43365640/set-unicode-filename-in-flask-response-header
-        response = make_response(pdf.output(dest='S').encode('latin-1'))
+        response = make_response(pdf.output(dest='S'))#.encode('latin-1')) #change to 'S'
         response.headers.set('Content-Type', 'application/pdf')
     elif output_type == 'txt':
         response = make_response(result)
@@ -62,6 +62,8 @@ def get_available_captions():
     try:
         yt_link = request.form['yt_link']
         YDL = ydl.YDLWrapper(yt_link)
+        print("###############")
+        print(YDL.list_available_captions())
         captions = map_initials_to_language_word(YDL.list_available_captions())
         aut_captions = map_initials_to_language_word(YDL.list_automatic_captions())
         aut_captions = ["(Automatic) " + c for c in aut_captions]

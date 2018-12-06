@@ -27,6 +27,9 @@ class YDLWrapper:
         return list(self.info["automatic_captions"].keys())
 
     def download_captions(self, lang_initials):
+        print("lang initials")
+        print(lang_initials)
+
         #manually created subtitles
         if lang_initials in self.info["subtitles"]:
             desired_subtitles_link = self.info["subtitles"][lang_initials][1]['url']

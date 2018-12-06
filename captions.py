@@ -61,7 +61,10 @@ def map_initials_to_language_word(initials):
     for initial in initials:
         try:
             if len(initial) == 2:
-                name = (pycountry.languages.get(alpha_2=initial)).name
+                if initial == "iw": #todo: settle the code language differences
+                    name = "Hebrew"
+                else:
+                    name = (pycountry.languages.get(alpha_2=initial)).name
             elif len(initial) == 3:
                 name = (pycountry.languages.get(alpha_3=initial)).name
             names.append(name) #todo: Moshe, how would you do this more correctly?
@@ -74,6 +77,8 @@ def get_initials(language):
     possible_prefix = "(Automatic) "
     if language.startswith(possible_prefix):
         language = language[len(possible_prefix):]
+    if language == "Hebrew": #because pycountry returns 'he' but fpdf returns 'iw' #fix sync!
+        return "iw"
     lang_object = pycountry.languages.get(name=language)
     try:
         initial = lang_object.alpha_2
