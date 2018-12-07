@@ -21,6 +21,7 @@
 <form style="text-align: center;" action='/get_worksheet' method="post">
     <fieldset>
         <table style="width: 30%;">
+            <input name="yt_link" style="display: none;" value="{{yt_link}}" />
             {{ input('name', label='File name', value='fill_in_blanks_sheet') }}
             <tr>
                 <td>

@@ -10,10 +10,10 @@ import traceback
 import youtube_dl
 
 app = Flask(__name__)
-YDL = None
 
 
-def generate_fibd_response_given_language(name, language, skip, output_type):
+def generate_fibd_response_given_language(yt_link, name, language, skip, output_type):
+    YDL = ydl.YDLWrapper(yt_link)
     result = generate_fillindblanks_given_language(YDL, language, skip, output_type=output_type)
     if output_type == 'pdf':
         pdf = result
@@ -56,7 +56,6 @@ def homepage():
 
 @app.route('/get_available_captions', methods=['GET','POST'])
 def get_available_captions():
-    global YDL
     try:
         yt_link = request.form['yt_link']
         YDL = ydl.YDLWrapper(yt_link)
@@ -66,7 +65,7 @@ def get_available_captions():
         aut_captions = map_initials_to_language_word(YDL.list_automatic_captions())
         aut_captions = ["(Automatic) " + c for c in aut_captions]
         captions.extend(aut_captions)
-        return render_template("caption_selection.html", captions=captions)
+        return render_template("caption_selection.html", yt_link=yt_link, captions=captions)
     except youtube_dl.utils.DownloadError as err:
         print(err)
         return "An error occured: {}\nTraceback:\n{}".format(str(err), traceback.format_exc())
@@ -78,12 +77,13 @@ def get_available_captions():
 @app.route('/get_worksheet', methods=['GET','POST'])
 def get_worksheet():
     try:
+        yt_link = request.form['yt_link']
         output_type = request.form['output_type']
         name = request.form['name'] if 'name' in request.form else 'fill_in_blanks_exercise'
         name = '.'.join([name, output_type])
         language = request.form['language']
         skip = int(request.form['skip'])
-        return generate_fibd_response_given_language(name, language, skip, output_type)
+        return generate_fibd_response_given_language(yt_link, name, language, skip, output_type)
     except youtube_dl.utils.DownloadError as err:
         print(err)
         return "An error occured: {}\nTraceback:\n{}".format(str(err), traceback.format_exc())
