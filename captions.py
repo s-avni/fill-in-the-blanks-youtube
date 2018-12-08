@@ -66,11 +66,19 @@ def map_initials_to_language_word(initials):
             if len(initial) == 2:
                 if initial in old_iso_639.keys():
                     name = old_iso_639[initial]
+                    names.append(name)
                 else:
                     name = (pycountry.languages.get(alpha_2=initial)).name
+                    names.append(name)
             elif len(initial) == 3:
                 name = (pycountry.languages.get(alpha_3=initial)).name
-            names.append(name) #todo: Moshe, how would you do this more correctly?
+                names.append(name)
+            else: #for a specific country, e.g. portugues of brazil. simply take the first two letters
+                name = (pycountry.languages.get(alpha_2=initial[:2])).name
+                print(name)
+                print(initial)
+                names.append(name)
+             #todo: Moshe, how would you do this more correctly?
         except KeyError as err:
             print(err)
     return names
