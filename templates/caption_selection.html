@@ -27,13 +27,21 @@
                 <td>
                     Caption language:
                 </td>
-                <td>
-                    <select name="language">
-                      {% for caption in captions %}
-                          <option value="{{caption}}">{{caption}}</option>
+
+                {% if captions|length > 0 %}
+                    <td>
+                    <select name="language_initial_tuple">
+                      {% for lang_initial_tuple in captions %}
+                          <option value="{{lang_initial_tuple}}">{{lang_initial_tuple[0]}}</option>
                       {% endfor %}>
                     </select>
-                </td>
+                    </td>
+                {% else %}
+                    <td>
+                        <em>Oh no! Please submit a video with (non automatic) captions.</em>
+                    </td>
+                {% endif %}
+
             </tr>
             {{ input('skip', label='Skip every n words', value=4, type='number') }}
             <tr>
@@ -50,5 +58,15 @@
         </table>
 
     </fieldset>
-    <input type="Submit" value="Generate exercise sheet">
+
+    {% if captions|length > 0 %}
+        <input type="Submit" value="Generate exercise sheet"/>
+    {% else %}
+        <input type="Submit" value="Generate exercise sheet" disabled/>
+    {% endif %}
 </form>
+
+<hr />
+<p>Unfortunately we still do not support right-to-left languages (Arabic, Hebrew, etc.) or languages that are not supported by the DejaVu font.
+    For the list of supported languages, please refer to this <a href="https://fontlibrary.org/en/font/dejavu-sans">link</a>.
+    <br />If you want your language supported or have any additional comments, please email <em>fill.in.blanks.generator@gmail.com</em>.</p>

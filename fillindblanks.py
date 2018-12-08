@@ -71,11 +71,10 @@ def generate_fillindblanks(link, language_initials, n_skip, output_file=None, ou
     return generate_output(captions, yt_video_title, output_file, output_type, n_skip, link, RTL=rtl)
 
 
-def generate_fillindblanks_given_language(ydl_wrapper, language, n_skip, output_file=None, output_type="pdf"):
+def generate_fillindblanks_given_language(ydl_wrapper, initials, n_skip, output_file=None, output_type="pdf"):
     yt_video_title = ydl_wrapper.get_title()
-    language_initials = c.get_initials(language)
-    rtl = is_rtl(language_initials)
-    captions = ydl_wrapper.download_captions(language_initials)
+    rtl = is_rtl(initials)
+    captions = ydl_wrapper.download_captions(initials)
     link = ydl_wrapper.get_link()
     return generate_output(captions, yt_video_title, output_file, output_type, n_skip, link, RTL=rtl)
 

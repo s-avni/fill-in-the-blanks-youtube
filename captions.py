@@ -14,9 +14,10 @@ def generate_clean_solution(captions):
     :return:
     '''
     # remove first 4 lines, which includes metadata
+    print(captions)
     captions = captions[4:]
     # remove all timestamp lines, i.e lines including the symbol "-->"
-    captions = [l for l in captions if "-->" not in l]
+    captions = [l.strip() for l in captions if "-->" not in l]
     # replace all \n in end of sentences with ""
     captions = [l.replace('\n', '') for l in captions]
     # remove all lines which are blank
@@ -66,35 +67,41 @@ def map_initials_to_language_word(initials):
             if len(initial) == 2:
                 if initial in old_iso_639.keys():
                     name = old_iso_639[initial]
-                    names.append(name)
+                    names.append((name, initial))
                 else:
                     name = (pycountry.languages.get(alpha_2=initial)).name
-                    names.append(name)
+                    names.append((name, initial))
             elif len(initial) == 3:
                 name = (pycountry.languages.get(alpha_3=initial)).name
-                names.append(name)
-            else: #for a specific country, e.g. portugues of brazil. simply take the first two letters
+                names.append((name, initial))
+            else: #for a specific country, etc.
+                # Chinese - zh-TW
+                # Portuguese - pt-PT (Portugal)
+                # Chinese - zh-Hans
+                # Chinese - zh-Hant
                 name = (pycountry.languages.get(alpha_2=initial[:2])).name
                 print(name)
                 print(initial)
-                names.append(name)
+                names.append((name + " " + initial, initial))
              #todo: Moshe, how would you do this more correctly?
         except KeyError as err:
             print(err)
+            names.append((initial, initial))
+    print(names)
     return names
 
 
-def get_initials(language):
-    possible_prefix = "(Automatic) "
-    if language.startswith(possible_prefix):
-        language = language[len(possible_prefix):]
-    if language in old_iso_639.values():
-        return [k for k,v in old_iso_639.items() if v == language][0]
-    lang_object = pycountry.languages.get(name=language)
-    try:
-        initial = lang_object.alpha_2
-    except AttributeError:
-        initial = lang_object.alpha_3
-    if initial is not None:
-        return initial
-    raise ValueError
+# def get_initials(language):
+#     possible_prefix = "(Automatic) "
+#     if language.startswith(possible_prefix):
+#         language = language[len(possible_prefix):]
+#     if language in old_iso_639.values():
+#         return [k for k,v in old_iso_639.items() if v == language][0]
+#     lang_object = pycountry.languages.get(name=language)
+#     try:
+#         initial = lang_object.alpha_2
+#     except AttributeError:
+#         initial = lang_object.alpha_3
+#     if initial is not None:
+#         return initial
+#     raise ValueError
