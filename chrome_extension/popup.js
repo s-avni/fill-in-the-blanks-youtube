@@ -92,16 +92,18 @@ const addCaptionOptions = async () => {
 document.getElementById("addCaptionOptions").addEventListener('click', addCaptionOptions);
 
 
-const getWorksheet = async () => {
-    const formData = new FormData(document.getElementById("form"));
-    console.log("formData", formData);
-    const captionResponse = await fetch(`${FILLINDBLANKS}/get_worksheet`, {
-        body: formData,
-        headers: {
-            "Content-Type": "multipart/form-data",
-            'Accept': 'application/json'
-        },
-        method: "post",
-    });
-    return captionResponse;
-}
+// const getWorksheet = async () => {
+//     const formData = new FormData(document.getElementById("form"));
+//     console.log("formData", formData);
+//     const captionResponse = await fetch(`${FILLINDBLANKS}/get_worksheet`, {
+//         body: formData,
+//         headers: {
+//             "Content-Type": "multipart/form-data",
+//             'Accept': 'application/json'
+//         },
+//         method: "post",
+//     });
+//     return captionResponse;
+// }
+
+document.getElementById("submit").addEventListener('click', () => alert("Preparing the worksheet (this may take a few seconds)..."));
