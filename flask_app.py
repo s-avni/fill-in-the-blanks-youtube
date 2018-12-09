@@ -6,6 +6,7 @@ import traceback
 
 import youtube_dl
 from flask import Flask, request, make_response, render_template, jsonify
+import werkzeug
 
 import youtube_download as ydl
 from captions import map_initials_to_language_word
@@ -111,23 +112,25 @@ def get_available_captions():
 
 @app.route('/get_worksheet', methods=['GET', 'POST'])
 def get_worksheet():
+    response = render_template(
+        'homepage.html', errorMsg="An unexpected error occured")
+
     try:
         yt_link = request.form['yt_link']
         output_type = request.form['output_type']
         name = request.form['name'] if 'name' in request.form else 'fill_in_blanks_exercise'
         name = '.'.join([name, output_type])
-        language_initial_tuple = request.form['language_initial_tuple'] #note: this is a string, not a tuple
-        language_initial_tuple = ast.literal_eval(language_initial_tuple)
-        initials = language_initial_tuple[1]
+        lang_initials = request.form['lang_initials']
         skip = int(request.form['skip'])
-        return generate_fibd_response_given_language(yt_link, name, initials, skip, output_type)
+        return generate_fibd_response_given_language(yt_link, name, lang_initials, skip, output_type)
     except youtube_dl.utils.DownloadError as err:
-        print(err)
-        return "An error occured: {}\nTraceback:\n{}".format(str(err), traceback.format_exc())
+        print(type(err), str(err), traceback.format_exc())
+        response = render_template(
+            'homepage.html', errorMsg="A Youtube download error occured")
+
     except Exception as err:
-        print(type(err))
-        print(err)
-        return "An error occured: {}\nTraceback:\n{}".format(str(err), traceback.format_exc())
+        print(type(err), str(err), traceback.format_exc())
+    return response
 
 
 @app.route('/fidb_worksheet_test')
@@ -135,15 +138,22 @@ def test_worksheet():
     '''
     TODO:
     '''
+    response = render_template(
+        'homepage.html', errorMsg="An unexpected error occured")
     try:
         name = 'test.pdf'
         yt_link = 'https://www.youtube.com/watch?v=mDclQowcE9I'
         lang_initials = 'en'
         skip = 5
-        return generate_fibd_response(name, yt_link, lang_initials, skip)
+        response = generate_fibd_response(name, yt_link, lang_initials, skip)
     except Exception as err:
-        return "An error occured: {}\nTraceback:\n{}".format(str(err), traceback.format_exc())
+        print(type(err), str(err), traceback.format_exc())
+    return response
 
+@app.errorhandler(werkzeug.exceptions.BadRequest)
+def handle_bad_request(e):
+    print("Bad request", request, e)
+    return 'bad request!', 400
 
 if __name__ == "__main__":
     app.run(debug=True)

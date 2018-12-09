@@ -30,9 +30,9 @@
 
                 {% if captions|length > 0 %}
                     <td>
-                    <select name="language_initial_tuple">
+                    <select name="lang_initials">
                       {% for lang_initial_tuple in captions %}
-                          <option value="{{lang_initial_tuple}}">{{lang_initial_tuple[0]}}</option>
+                          <option value="{{lang_initial_tuple[1]}}">{{lang_initial_tuple[0]}}</option>
                       {% endfor %}>
                     </select>
                     </td>
