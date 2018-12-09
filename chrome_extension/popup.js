@@ -107,3 +107,17 @@ document.getElementById("addCaptionOptions").addEventListener('click', addCaptio
 // }
 
 document.getElementById("submit").addEventListener('click', () => alert("Preparing the worksheet (this may take a few seconds)..."));
+
+
+
+chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    const url = tabs[0] && tabs[0].url;
+    if (url.startsWith("https://www.youtube.com/watch")) {
+        const yt_link_input = document.getElementById("yt_link");
+        const yt_link = yt_link_input.value;
+        if (!yt_link) {
+            yt_link_input.value = url;
+            addCaptionOptions();
+        }
+    }
+});
