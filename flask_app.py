@@ -71,30 +71,42 @@ def homepage():
 
 @app.route('/caption_selection', methods=['GET', 'POST'])
 def caption_selection():
+    response = render_template(
+        'homepage.html', errorMsg="An unexpected error occured")
     try:
+        assert 'yt_link' in request.form, "Could not get Youtube URL from form."
         yt_link = request.form['yt_link']
+        assert yt_link != '', "You did not pass a URL"
         captions = captions_from_yt_link(yt_link)
-        return render_template("caption_selection.html", yt_link=yt_link, captions=captions)
+        response = render_template("caption_selection.html", yt_link=yt_link, captions=captions)
     except youtube_dl.utils.DownloadError as err:
-        print(err)
-        return "An error occured: {}\nTraceback:\n{}".format(str(err), traceback.format_exc())
+        print(type(err), str(err), traceback.format_exc())
+        response = render_template('homepage.html', errorMsg="Youtube download error - check the URL you provided")
+    except AssertionError as err:
+        print(type(err), str(err), traceback.format_exc())
+        if str(err):
+            response = render_template('homepage.html', errorMsg=(str(err)))
     except Exception as err:
-        print(type(err))
-        return "An error occured: {}\nTraceback:\n{}".format(str(err), traceback.format_exc())
-
+        print(type(err), str(err), traceback.format_exc())
+    return response
 
 @app.route('/get_available_captions', methods=['GET', 'POST'])
 def get_available_captions():
+    yt_link = None
     try:
-        yt_link = request.form['yt_link']
+        req_data = request.get_json()
+        yt_link = req_data['yt_link']
         captions = captions_from_yt_link(yt_link)
         return jsonify(yt_link=yt_link, captions=captions)
     except youtube_dl.utils.DownloadError as err:
-        print(err)
-        return "An error occured: {}\nTraceback:\n{}".format(str(err), traceback.format_exc())
+        print(type(err), str(err), traceback.format_exc())
+        return jsonify(error="Youtube download error - check the URL you provided")
     except Exception as err:
-        print(type(err))
-        return "An error occured: {}\nTraceback:\n{}".format(str(err), traceback.format_exc())
+        print(type(err), str(err), traceback.format_exc())
+        if (yt_link is not None):
+            return jsonify(error="An error occured while trying to get captions for `{}`".format(yt_link))
+        else:
+            return jsonify(error="Failed to recieve youtube link in request")
 
 
 @app.route('/get_worksheet', methods=['GET', 'POST'])
