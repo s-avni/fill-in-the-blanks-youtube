@@ -19,11 +19,9 @@
   },
   "permissions": [
     "activeTab",
-    "contextMenus",
     "tabs",
-    "https://ajax.googleapis.com/",
-    "http://*/",
-    "https://*/"
+    "https://fillindblanks.herokuapp.com/get_available_captions",
+    "https://fillindblanks.herokuapp.com/get_worksheet"
   ],
   "minimum_chrome_version": "28"
 }

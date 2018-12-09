@@ -1,12 +1,105 @@
 <html>
-<head>
-	<style type="text/css">
-	body {width:500; height:200;}
-	</style>
-</head>
-<body>
-	<iframe src="https://vehpus.pythonanywhere.com" width="100%" height="100%" frameborder="0">
-	</iframe>
-</body>
-</html>
 
+<head>
+    <style type="text/css">
+        body {
+            width: 500;
+            height: auto;
+            font-family: sans-serif;
+        }
+        form {
+            text-align: center;
+        }
+        table, tbody, tr, input {
+            width: 100%;
+        }
+        tr {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+        }
+        a, h1, h2 {
+            color: #377ba8;
+        }
+        h1, h2 {
+            font-family: 'Georgia', serif; margin: 0;
+        }
+        .captionsFields {
+            display: none;
+        }
+        #errors {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="errors">
+    </div>
+    <form id="form" action="https://fillindblanks.herokuapp.com/get_worksheet" method="post">
+        <fieldset>
+            <table>
+                <tr>
+                    <td>
+                        Youtube link:
+                    </td>
+                    <td>
+                        <input id="yt_link" name="yt_link" value="">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Get captions:
+                    </td>
+                    <td>
+                        <button id="addCaptionOptions" type="button">
+                            Get captions
+                        </button>
+                    </td>
+                </tr>
+                <tr  class="captionsFields">
+                    <td>
+                        File name:
+                    </td>
+                    <td>
+                        <input name="name" value="fill_in_blanks_sheet">
+                    </td>
+                </tr>
+                <tr class="captionsFields">
+                    <td>
+                        Caption language:
+                    </td>
+                    <td>
+                        <select id="captions" name="lang_initials">
+                        </select>
+                    </td>
+                </tr>
+                <tr  class="captionsFields">
+                    <td>
+                        Skip every n words:
+                    </td>
+                    <td>
+                        <input name="skip" value="4" type="number">
+                    </td>
+                </tr>
+                <tr  class="captionsFields">
+                    <td>
+                        Output type:
+                    </td>
+                    <td>
+                        <select name="output_type" default="pdf">
+                            <option value="pdf">PDF</option>
+                            <option value="txt">Plaintext</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+
+        </fieldset>
+        <button id="submit" class="captionsFields" type="submit">
+            Generate exercise sheet
+        </button>
+    </form>
+    <script src="popup.js"></script>
+</body>
+
+</html>
