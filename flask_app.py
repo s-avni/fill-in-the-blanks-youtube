@@ -141,10 +141,10 @@ def test_worksheet():
     response = render_template(
         'homepage.html', errorMsg="An unexpected error occured")
     try:
-        name = 'test.pdf'
-        yt_link = 'https://www.youtube.com/watch?v=mDclQowcE9I'
+        name = 'Harry_Potter_Fill_In_Blanks.pdf'
+        yt_link = 'https://www.youtube.com/watch?v=y57sYHIDP_Y&t=6s'
         lang_initials = 'en'
-        skip = 5
+        skip = 4
         response = generate_fibd_response(name, yt_link, lang_initials, skip)
     except Exception as err:
         print(type(err), str(err), traceback.format_exc())
