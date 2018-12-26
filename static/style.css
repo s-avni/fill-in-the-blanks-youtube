@@ -1,7 +1,0 @@
-/*Note! Flask css gets cached, and a regular refresh of the page will
-not show the css changes. Do Ctrl + Shift + R for a hard refresh to see changes*/
-
-/*https://stackoverflow.com/questions/30717443/flask-does-not-load-css-file*/
-
-
-#info_div {width:40px%;}

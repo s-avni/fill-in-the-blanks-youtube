@@ -1,40 +1,68 @@
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}"/>
+{% extends "bootstrap/base.html" %}
 
+{% block title %}Fill in the blanks YouTube generator{% endblock %}
 
-<h1 style="text-align: center;"><span
-        style="color: #0000ff;"><strong>Fill in the blanks YouTube generator</strong></span></h1>
-</br>
+{% block content %}
+<div class="container center_div" align=middle>
+        <h1>Fill in the blanks YouTube generator</h1>
+    <p>This website offers a uniquely easy way to practice a new language. It
+        generates a fill-in the-blank work sheet from a YouTube video of your
+        choosing that you can fill while listening to the video.</p>
 
-    <p style="text-align: center;">If you want to practice your language listening skills or provide fun
-        fill-in-the-blank
-        exercises for your students, you've come to the right place! </p>
+    <br/>
+
+    Instructions:
+    <ol>
+        <li>Choose the video you want to use for your exercise.</li>
+        <li>Copy the URL of the video (the website address)</li>
+        <li>Paste it below and press continue.</li>
+        <li>On the next page, choose the language you want to practice.</li>
+        <li>Download the PDF.</li>
+        <li>While watching the video on YouTube, try to fill in the missing words!</li>
+    </ol>
+
+    Important!
+    <ul>
+        <li>The video you choose must include the option to add subtitles that are
+            not auto-generated. To make sure it does, go to the video, press settings, subtitles, and make sure there is
+            one
+            available.
+        </li>
+        <li>As of now, the website does not support right to left languages :(</li>
+    </ul>
+
+    </p>
     <p style="text-align: center;"> Select any YouTube video with (non automatic) captions and instantly
         generate an
         exercise & solutions sheet! Have a look at our
         <a href="/fidb_worksheet_test">demo sheet</a> if you want to see an example.</p>
 
-<h2 style="color: red; text-align: center;">{{errorMsg}}</h2>
-<form style="text-align: center;" action='/caption_selection' method="post">
-    <p><b>Enter YouTube link:</b></p>
-    <p><input type="text" name="yt_link" style="width:700px;"/></p>
-    <!--todo: width is horrible practice, use css instead -->
-    <input type="submit" value="Find available captions">
-</form>
-<br/>
+    <h2 style="color: red; text-align: center;">{{errorMsg}}</h2>
+    <form style="text-align: center;" action='/caption_selection' method="post">
+        <p><b>Enter YouTube link:</b></p>
+        <p><input type="text" name="yt_link" style="width:700px;"/></p>
+        <!--todo: width is horrible practice, use css instead -->
+        <input type="submit" value="Continue">
+    </form>
+    <br/>
 
-<p style="text-align: center;"><img style="border: 2px solid black;"
-                                    src="{{url_for('static', filename='Example_Sheet.png')}}"
-                                    alt="example exercise sheet image" width="700"/></p>
+    <p style="text-align: center;"><img style="border: 2px solid black;"
+                                        src="{{url_for('static', filename='Example_Sheet.png')}}"
+                                        alt="example exercise sheet image" width="700"/></p>
 
 
-<hr/>
-<h4 style="text-align: center;">This website was created by two software developers, one of whom is currently
-    learning a
-    new language
-    and needs all the help she can get! <br/> We hope you find this website useful for your language
-    learning.<br/>
-    <br/> If you
-    have any comments, ideas, or feedback, please email <em>fill.in.blanks.generator@gmail.com</em>.</h4>
+    <hr/>
+
+    <h4 style="text-align: center;">We hope you find this website useful for your language
+        learning.
+        <br/>
+        <br/>
+        If you have any comments, ideas, or feedback, please email <em>fill.in.blanks.generator@gmail.com</em>.
+    </h4>
+</div>
+{% endblock %}
+
+
 
 
 

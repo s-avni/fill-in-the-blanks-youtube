@@ -11,10 +11,10 @@ import werkzeug
 import youtube_download as ydl
 from captions import map_initials_to_language_word
 from fillindblanks import generate_fillindblanks, generate_fillindblanks_given_language
-import ast
+from flask_bootstrap import Bootstrap
 
 app = Flask(__name__)
-
+Bootstrap(app)
 
 def captions_from_yt_link(yt_link):
     YDL = ydl.YDLWrapper(yt_link)
@@ -67,7 +67,7 @@ def generate_fibd_response(name, yt_link, lang_initials, skip, output_type='pdf'
 
 @app.route('/')
 def homepage():
-    return render_template('homepage.html')
+    return render_template('index.html')
 
 
 @app.route('/caption_selection', methods=['GET', 'POST'])
