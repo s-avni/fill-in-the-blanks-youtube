@@ -1,61 +1,120 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
-  <title>Fill in the blanks YouTube generator</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <title>Fill in the blanks YouTube generator</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
 
 <div class="jumbotron text-center">
-  <h1>fill in the blanks YouTube generator</h1>
-  <p>This website offers a uniquely easy way to practice a new language.</p>
-  <p>It generates a <mark class="text-info">fill-in the-blank worksheet</mark> from a
-    <mark class="text-warning">YouTube video</mark> of your
-    choosing that you can fill in while listening to the video.</p>
+    <h1>fill in the blanks YouTube generator</h1>
+    <p>This website offers a uniquely easy way to practice a new language.</p>
+    <p>It generates a
+        <mark class="text-info">fill-in the-blank worksheet</mark>
+        from a
+        <mark class="text-warning">YouTube video</mark>
+        of your
+        choosing that you can fill in while listening to the video.
+    </p>
 </div>
 
 <div class="container">
-  <div class="row">
-    <div class="col-sm-8 col-sm-offset-2">
-      <h3>Instructions:</h3>
-      <ol>
-        <li>Choose the video you want to use for your exercise.</li>
-        <li>Copy the URL of the video (the website address).</li>
-        <li>Paste it below and press continue.</li>
-        <li>On the next page, choose the language you want to practice.</li>
-        <li>Download the PDF.</li>
-        <li>While watching the video on YouTube, try to fill in the missing words!</li>
-      </ol>
+    {% for message in get_flashed_messages() %}
+    <div class="alert alert-warning">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        {{ message }}
     </div>
-  </div>
-  <div class="row">
-    <div class="col-sm-8 col-sm-offset-2">
-      <h3 class="text-info">Important!</h3>
-      <ul>
-        <li>The video you choose must include the option to add subtitles that are
-            not auto-generated. To make sure it does, go to the video, press <mark>settings</mark>, <mark>subtitles</mark>, and make sure there is
-            one
-            available.
-        </li>
-        <li>As of now, the website does not support right-to-left languages :(</li>
-      </ul>
+    {% endfor %}
+    <div class="row">
+        <div class="col-sm-8 col-sm-offset-2 text-center">
+            <h2>Enter YouTube link</h2>
+            <div class="input-bar">
+                <div class="input-bar-item width100">
+                    <form method="POST" role="form">
+                        <div class="input-group">
+                            {{ form.hidden_tag() }}
+                            {{ form.link(class="form-control width100",id="link",required='required',type="text",value="",placeholder="e.g. https://www.youtube.com/watch?v=y57sYHIDP_Y") }}
+                            <!--<input class="form-control width100" id="link" name="link"-->
+                                   <!--placeholder="e.g. https://www.youtube.com/watch?v=y57sYHIDP_Y">-->
+                            <span class="input-group-btn">
+                  <input type="submit" id="submit" name="submit" class="btn btn-primary">Continue</input>
+                </span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="col-sm-8 col-sm-offset-2">
-    <h3>Enter YouTube link</h3>
-    <form>
-      <div class="form-group">
-        <input type="text" class="form-control" id="link" placeholder="e.g. https://www.youtube.com/watch?v=y57sYHIDP_Y">
-      </div>
-      <button type="submit" class="btn btn-primary">Continue</button>
-    </form>
+    <div class="row">
+        <div class="col-sm-8 col-sm-offset-2">
+            <hr>
+            <h3>Instructions:</h3>
+            <ol>
+                <li>Choose the video you want to use for your exercise.</li>
+                <li>Copy the URL of the video (the website address).</li>
+                <li>Paste it above and press continue.</li>
+                <li>On the next page, choose the language you want to practice.</li>
+                <li>Download the PDF.</li>
+                <li>While watching the video on YouTube, try to fill in the missing words!</li>
+            </ol>
+        </div>
     </div>
-  </div>
+    <div class="row">
+        <div class="col-sm-4 col-sm-offset-2">
+            <h3 class="text-info">Important!</h3>
+            <ul>
+                <li>The video you choose must include the option to add subtitles that are
+                    not auto-generated. To make sure it does, go to the video, press
+                    <mark>settings,</mark>
+                    <mark>subtitles,</mark>
+                    and make sure there is
+                    one
+                    available.
+                </li>
+                <li>As of now, the website does not support right-to-left languages :(</li>
+            </ul>
+        </div>
+        <div class="col-sm-4">
+            <h3 class="text-info">Example worksheet</h3>
+            <p>Have a look at our
+                <a href="/fidb_worksheet_test">demo sheet</a> (exercise + solution) if you want to see an example
+                before
+                trying it out yourself.</p>
+        </div>
+    </div>
+
+    <div>
+        <br>
+        <br/>
+    </div>
+    <div class="row">
+        <div class="col-sm-8 col-sm-offset-2">
+            <img class="img-thumbnail" src="{{url_for('static', filename='Example_Sheet.png')}}"
+                 alt="example exercise sheet image">
+            <div class="caption text-center">
+                <p><em>
+                    <small>example worksheet: the first page is an exercise sheet, and the second is the solution, with
+                        the complete text
+                    </small>
+                </em></p>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-8 col-sm-offset-2">
+            <hr>
+            <p style="text-align: center;">
+                We hope you find this website useful for your language
+                learning.
+                <br/>
+                If you have any comments, ideas, or feedback, please email <em>fill.in.blanks.generator@gmail.com</em>.
+            </p>
+        </div>
+    </div>
 </div>
 
 </body>

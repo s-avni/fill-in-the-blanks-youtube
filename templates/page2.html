@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>Fill in the blanks YouTube generator</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="jumbotron text-center">
+    <h1>Configuration</h1>
+    <p>Configure the settings for your worksheet: desired caption language, file type, file name, and how often a word
+        should be skipped. </p>
+</div>
+
+<form class="container" method="POST" role="form">
+    {% for message in get_flashed_messages() %}
+    <div class="alert alert-warning">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        {{ message }}
+    </div>
+    {% endfor %}
+    {{ form.hidden_tag() }}
+    <div class="form-group row col-sm-8 col-sm-offset-2">
+        <label class="col-sm-2 col-form-label">File name</label>
+        <div class="col-sm-10">
+            {{
+            form.file_name(class="form-control",id="file_name",required='required',type="text",value="my_worksheet")
+            }}
+            <!--<input type="text" class="form-control" id="file_name" placeholder="my_worksheet">-->
+        </div>
+    </div>
+    <div class="form-group row col-sm-8 col-sm-offset-2">
+        <label for="lang" class="col-sm-2 col-form-label">Caption language</label>
+        <div class="col-sm-10">
+            <select id="caption_lang" name="caption_lang" class="form-control">
+                {% if form.caption_lang.choices|length < 1 %}
+                <option value="None">Oh no! Please submit a video with (non automatic) captions.</option>
+                {% else %}
+
+                {% for language, initials in form.caption_lang.choices %}
+                <option value="{{ language }}">{{ language }}</option>
+                {% endfor %}
+                {% endif %}
+            </select>
+        </div>
+    </div>
+    <div class="form-group row col-sm-8 col-sm-offset-2">
+        <label for="skip_every" class="col-sm-2 col-form-label">Skip every n words</label>
+        <div class="col-sm-10">
+            {{ form.skip_every(class="form-control",id="skip_every",required='required',type="number",
+            min="1", step="1", max="20") }}
+            <!--<input type="number" min="1" step="1" max="20" class="form-control" id="skip_every" value="3">-->
+        </div>
+    </div>
+    <div class="form-group row col-sm-8 col-sm-offset-2">
+        <label for="pdf_radio" class="col-sm-2 col-form-label">File type</label>
+        {% for subfield in form.output_type %}
+        <tr>
+            <td>{{ subfield }}</td>
+            <td>{{ subfield.label }}</td>
+        </tr>
+        {% endfor %}
+    </div>
+    <div class="form-group row col-sm-8 col-sm-offset-2">
+        <div class="col-sm-8">
+            <button type="submit" id="submit" name="submit" class="btn btn-primary">Generate worksheet</button>
+        </div>
+    </div>
+</form>
+<div class="row">
+    <div class="col-sm-8 col-sm-offset-2 text-center">
+        <hr>
+        <p>Unfortunately we still do not support right-to-left languages (Arabic, Hebrew, etc.) or languages that
+            are not supported by the DejaVu font.
+            For the list of supported languages, please see <a
+                    href="https://fontlibrary.org/en/font/dejavu-sans">here</a>.
+            <br/>
+            <br/>If you want your language supported or have any additional comments, please email
+            <mark class="text-info">fill.in.blanks.generator@gmail.com.</mark>
+        </p>
+    </div>
+</div>
+
+</body>
+</html>
