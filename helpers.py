@@ -1,7 +1,9 @@
+from flask import make_response
+
 import youtube_download as ydl
 from captions import map_initials_to_language_word
 from fillindblanks import generate_fillindblanks, generate_fillindblanks_given_language
-from flask import make_response
+
 
 def captions_from_yt_link(yt_link):
     YDL = ydl.YDLWrapper(yt_link)

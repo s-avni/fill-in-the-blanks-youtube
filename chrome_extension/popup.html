@@ -29,77 +29,78 @@
         #errors {
             color: red;
         }
+
     </style>
 </head>
 
 <body>
-    <div id="errors">
-    </div>
-    <form id="form" action="https://fillindblanks.herokuapp.com/get_worksheet" method="post">
-        <fieldset>
-            <table>
-                <tr>
-                    <td>
-                        Youtube link:
-                    </td>
-                    <td>
-                        <input id="yt_link" name="yt_link" value="">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Get captions:
-                    </td>
-                    <td>
-                        <button id="addCaptionOptions" type="button">
-                            Get captions
-                        </button>
-                    </td>
-                </tr>
-                <tr  class="captionsFields">
-                    <td>
-                        File name:
-                    </td>
-                    <td>
-                        <input name="name" value="fill_in_blanks_sheet">
-                    </td>
-                </tr>
-                <tr class="captionsFields">
-                    <td>
-                        Caption language:
-                    </td>
-                    <td>
-                        <select id="captions" name="lang_initials">
-                        </select>
-                    </td>
-                </tr>
-                <tr  class="captionsFields">
-                    <td>
-                        Skip every n words:
-                    </td>
-                    <td>
-                        <input name="skip" value="4" type="number">
-                    </td>
-                </tr>
-                <tr  class="captionsFields">
-                    <td>
-                        Output type:
-                    </td>
-                    <td>
-                        <select name="output_type" default="pdf">
-                            <option value="pdf">PDF</option>
-                            <option value="txt">Plaintext</option>
-                        </select>
-                    </td>
-                </tr>
-            </table>
+<div id="errors">
+</div>
+<form action="https://fillindblanks.herokuapp.com/get_worksheet" id="form" method="post">
+    <fieldset>
+        <table>
+            <tr>
+                <td>
+                    Youtube link:
+                </td>
+                <td>
+                    <input id="yt_link" name="yt_link" value="">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Get captions:
+                </td>
+                <td>
+                    <button id="addCaptionOptions" type="button">
+                        Get captions
+                    </button>
+                </td>
+            </tr>
+            <tr class="captionsFields">
+                <td>
+                    File name:
+                </td>
+                <td>
+                    <input name="name" value="fill_in_blanks_sheet">
+                </td>
+            </tr>
+            <tr class="captionsFields">
+                <td>
+                    Caption language:
+                </td>
+                <td>
+                    <select id="captions" name="lang_initials">
+                    </select>
+                </td>
+            </tr>
+            <tr class="captionsFields">
+                <td>
+                    Skip every n words:
+                </td>
+                <td>
+                    <input name="skip" type="number" value="4">
+                </td>
+            </tr>
+            <tr class="captionsFields">
+                <td>
+                    Output type:
+                </td>
+                <td>
+                    <select default="pdf" name="output_type">
+                        <option value="pdf">PDF</option>
+                        <option value="txt">Plaintext</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
 
-        </fieldset>
-        <button id="submit" class="captionsFields" type="submit">
-            Generate exercise sheet
-        </button>
-    </form>
-    <script src="popup.js"></script>
+    </fieldset>
+    <button class="captionsFields" id="submit" type="submit">
+        Generate exercise sheet
+    </button>
+</form>
+<script src="popup.js"></script>
 </body>
 
 </html>

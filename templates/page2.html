@@ -3,8 +3,8 @@
 <head>
     <title>Fill in the blanks YouTube generator</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
@@ -19,7 +19,7 @@
 <form class="container" method="POST" role="form">
     {% for message in get_flashed_messages() %}
     <div class="alert alert-warning">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <button class="close" data-dismiss="alert" type="button">&times;</button>
         {{ message }}
     </div>
     {% endfor %}
@@ -34,9 +34,9 @@
         </div>
     </div>
     <div class="form-group row col-sm-8 col-sm-offset-2">
-        <label for="lang" class="col-sm-2 col-form-label">Caption language</label>
+        <label class="col-sm-2 col-form-label" for="lang">Caption language</label>
         <div class="col-sm-10">
-            <select id="caption_lang" name="caption_lang" class="form-control">
+            <select class="form-control" id="caption_lang" name="caption_lang">
                 {% if form.caption_lang.choices|length < 1 %}
                 <option value="None">Oh no! Please submit a video with (non automatic) captions.</option>
                 {% else %}
@@ -49,7 +49,7 @@
         </div>
     </div>
     <div class="form-group row col-sm-8 col-sm-offset-2">
-        <label for="skip_every" class="col-sm-2 col-form-label">Skip every n words</label>
+        <label class="col-sm-2 col-form-label" for="skip_every">Skip every n words</label>
         <div class="col-sm-10">
             {{ form.skip_every(class="form-control",id="skip_every",required='required',type="number",
             min="1", step="1", max="20") }}
@@ -57,7 +57,7 @@
         </div>
     </div>
     <div class="form-group row col-sm-8 col-sm-offset-2">
-        <label for="pdf_radio" class="col-sm-2 col-form-label">File type</label>
+        <label class="col-sm-2 col-form-label" for="pdf_radio">File type</label>
         {% for subfield in form.output_type %}
         <tr>
             <td>{{ subfield }}</td>
@@ -67,7 +67,7 @@
     </div>
     <div class="form-group row col-sm-8 col-sm-offset-2">
         <div class="col-sm-8">
-            <button type="submit" id="submit" name="submit" class="btn btn-primary">Generate worksheet</button>
+            <button class="btn btn-primary" id="submit" name="submit" type="submit">Generate worksheet</button>
         </div>
     </div>
 </form>

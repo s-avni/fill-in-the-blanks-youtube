@@ -3,18 +3,27 @@
 # A very simple Flask Hello World app for you to get started with...
 
 import traceback
+
+import werkzeug
 import youtube_dl
 from flask import Flask, request, render_template, url_for, session, redirect, flash
-import werkzeug
-from flask_bootstrap import Bootstrap
-from helpers import captions_from_yt_link, generate_fibd_response_given_language, generate_fibd_response
+
 from forms import YTLinkForm, WorksheetForm
+from helpers import captions_from_yt_link, generate_fibd_response_given_language, generate_fibd_response
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '239045863w09txjlfdktjew40693846elkrj634096834906'
-Bootstrap(app)
 
-@app.route('/',  methods=['GET', 'POST'])
+#todo: forms are definitely an overkill here. because the homepage is such a simple form and we are using
+#todo: form objects, then we have to create these objects for each redirect to the homepage
+#todo: either see how we avoid this, or get rid of form objects, although it was fun implementing them!
+
+#todo: we are encountering some version of the get-post problem, where when we go back in the browser
+#todo: we are asked if we want to resubmit the form. we should deal with this gracefully
+
+#todo: i have used sessions, but that is probably overkill as well. to google: pros/cons of sessions
+
+@app.route('/', methods=['GET', 'POST'])
 def index():
     link = None
     form = YTLinkForm()
@@ -25,7 +34,6 @@ def index():
     return render_template('index.html', form=form, link=link)
 
 
-#todo: taking too long!
 @app.route('/caption_selection', methods=['GET', 'POST'])
 def caption_selection():
     link = session['link']
@@ -35,13 +43,11 @@ def caption_selection():
         captions = captions_from_yt_link(link.strip())
         print("!!")
         print(captions)
-        form.caption_lang.choices = captions #dynamic choices
-        # if len(captions) > 0:
-        #     form.caption_lang.data = captions[0][0] #todo: hack, the language, not the tuple!
+        form.caption_lang.choices = captions  # dynamic choices
     except youtube_dl.utils.DownloadError as err:
         print(type(err), str(err), traceback.format_exc())
         flash("Youtube download error - check the URL you provided")
-        response = render_template("index.html", index_form)
+        response = render_template("index.html", form=index_form)
         return response
     except Exception as err:
         flash(str(err))
@@ -50,28 +56,22 @@ def caption_selection():
         response = render_template("index.html", form=index_form)
         return response
     if form.validate_on_submit():
-        print("\n\nhere")
         session['output_type'] = form.output_type.data
         session['name'] = form.file_name.data
         session['skip'] = int(form.skip_every.data)
-        for lang, initials in captions: #todo: yucky
+        for lang, initials in captions:  # todo: yucky
             if lang == form.caption_lang.data:
                 session['lang_initials'] = initials
         print(session['lang_initials'])
         return redirect(url_for('get_worksheet'))
-        # response = render_template("index.html")
-        # flash("Worksheet downloaded!")
-        # return response
     elif form.errors is not None:
-        print("@@@@@@@@@@@")
         print(form.errors)
-    print("\n\nyes")
     return render_template('page2.html', form=form, yt_link=link)
 
 
 @app.route('/get_worksheet', methods=['GET'])
 def get_worksheet():
-    index_form = YTLinkForm() #todo: yuck, to take care of
+    index_form = YTLinkForm()  # todo: yuck, to take care of
     try:
         name = '.'.join([session['name'], session['output_type']])
         return generate_fibd_response_given_language(session['link'],
@@ -88,6 +88,7 @@ def get_worksheet():
         response = render_template("index.html", form=index_form)
         flash("An unexpected error occured")
     return response
+
 
 # @app.route('/get_available_captions', methods=['GET', 'POST'])
 # def get_available_captions():

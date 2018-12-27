@@ -3,8 +3,8 @@
 <head>
     <title>Fill in the blanks YouTube generator</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
@@ -25,7 +25,7 @@
 <div class="container">
     {% for message in get_flashed_messages() %}
     <div class="alert alert-warning">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <button class="close" data-dismiss="alert" type="button">&times;</button>
         {{ message }}
     </div>
     {% endfor %}
@@ -37,11 +37,12 @@
                     <form method="POST" role="form">
                         <div class="input-group">
                             {{ form.hidden_tag() }}
-                            {{ form.link(class="form-control width100",id="link",required='required',type="text",value="",placeholder="e.g. https://www.youtube.com/watch?v=y57sYHIDP_Y") }}
+                            {{ form.link(class="form-control
+                            width100",id="link",required='required',type="text",value="",placeholder="e.g. https://www.youtube.com/watch?v=y57sYHIDP_Y") }}
                             <!--<input class="form-control width100" id="link" name="link"-->
-                                   <!--placeholder="e.g. https://www.youtube.com/watch?v=y57sYHIDP_Y">-->
+                            <!--placeholder="e.g. https://www.youtube.com/watch?v=y57sYHIDP_Y">-->
                             <span class="input-group-btn">
-                  <input type="submit" id="submit" name="submit" class="btn btn-primary">Continue</input>
+                  <input class="btn btn-primary" id="submit" name="submit" type="submit">Continue</input>
                 </span>
                         </div>
                     </form>
@@ -93,8 +94,8 @@
     </div>
     <div class="row">
         <div class="col-sm-8 col-sm-offset-2">
-            <img class="img-thumbnail" src="{{url_for('static', filename='Example_Sheet.png')}}"
-                 alt="example exercise sheet image">
+            <img alt="example exercise sheet image" class="img-thumbnail"
+                 src="{{url_for('static', filename='Example_Sheet.png')}}">
             <div class="caption text-center">
                 <p><em>
                     <small>example worksheet: the first page is an exercise sheet, and the second is the solution, with

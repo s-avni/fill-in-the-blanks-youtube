@@ -30,11 +30,11 @@ class YDLWrapper:
         print("lang initials")
         print(lang_initials)
 
-        #manually created subtitles
+        # manually created subtitles
         if lang_initials in self.info["subtitles"]:
             desired_subtitles_link = self.info["subtitles"][lang_initials][1]['url']
             print(desired_subtitles_link)
-        #automatically generated subtitles
+        # automatically generated subtitles
         elif lang_initials in self.info["automatic_captions"]:
             desired_subtitles_link = self.info["automatic_captions"][lang_initials][0]['url']
             print(desired_subtitles_link)

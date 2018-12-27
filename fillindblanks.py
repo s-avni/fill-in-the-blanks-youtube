@@ -6,15 +6,15 @@ installed.
 The module can be run as a script from the commandline, passing in the youtube
 link you desire and the language caption that you want.
 """
-from fpdf import FPDF
-import logging
 import argparse
-import youtube_dl
-import urllib.request
-import captions as c
 import os
+
+from fpdf import FPDF
+
+import captions as c
 import youtube_download as yd
 from rtl import is_rtl, flip_rtl_string
+
 
 def parse_args():
     '''
@@ -84,19 +84,19 @@ def generate_fidb_pdf(yt_video_title, yt_link, captions_blanks, solutions, RTL):
     @summary: creates exercise pdf including link to video_title, exercise, and solution
     TODO: Handle language specific fonts https://pyfpdf.readthedocs.io/en/latest/Unicode/index.html
     '''
-    #create pdf
+    # create pdf
     alignment = "L" if RTL is False else "R"
 
-    pdf = FPDF() #default: Portrait, A4, millimeter unit
+    pdf = FPDF()  # default: Portrait, A4, millimeter unit
     pdf.compress = 0
-    #pdf.set_right_margin(20)
+    # pdf.set_right_margin(20)
     pdf.add_page()
     pdf.add_font('DejaVu', '',
                  '{}/fonts/DejaVuSansCondensed.ttf'.format(
                      os.path.dirname(os.path.realpath(__file__))
                  ), uni=True)
 
-    #video title and fill in blanks on first page
+    # video title and fill in blanks on first page
     pdf.set_font('Arial', 'B', 14)
     pdf.cell(w=200, h=10,
              txt="Fill-in-the-blanks exercise!",
@@ -111,23 +111,23 @@ def generate_fidb_pdf(yt_video_title, yt_link, captions_blanks, solutions, RTL):
 
     pdf.set_text_color(0, 0, 255)
 
-    title_to_print = yt_video_title #todo: erase this fix, which limits to n letters
+    title_to_print = yt_video_title  # todo: erase this fix, which limits to n letters
     if len(title_to_print) > 30:
         title_to_print = title_to_print[:30] + "..."
 
     print(yt_video_title)
     print(yt_video_title[:30])
-    #todo: add fix- cell should provide error if string width > cell width; can't use multicell, because multicell does not support http link
+    # todo: add fix- cell should provide error if string width > cell width; can't use multicell, because multicell does not support http link
     pdf.cell(w=200, h=10, txt=title_to_print,
              link=yt_link, ln=1, align="C")
 
-    pdf.set_text_color(0,0,0)
+    pdf.set_text_color(0, 0, 0)
 
     pdf.set_font("DejaVu", size=12)
 
     pdf.multi_cell(w=0, h=10, border=1, txt=captions_blanks, align=alignment)
 
-    #solutions on second page
+    # solutions on second page
     pdf.add_page()
     pdf.set_font("Arial", "B", size=14)
     pdf.cell(w=200, h=10, txt="Solution:", ln=1, align="C")
@@ -140,10 +140,9 @@ def generate_fidb_pdf(yt_video_title, yt_link, captions_blanks, solutions, RTL):
 
 if __name__ == '__main__':
     args = parse_args()
-    skip=args.skip
-    yt_link = args.youtube_link #"https://www.youtube.com/watch?v=cLuvtesdyJw"
+    skip = args.skip
+    yt_link = args.youtube_link  # "https://www.youtube.com/watch?v=cLuvtesdyJw"
     lang_initials = args.language_initials
     output = args.output if hasattr(args, "output") else None
     output_type = args.type
     generate_fillindblanks(yt_link, lang_initials, skip, output, output_type)
-

@@ -1,10 +1,12 @@
 import logging
 import re
+
 import pycountry
 
-#https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
-old_iso_639 = {"iw" : "Hebrew",
-               "ji" : "Yiddish"}
+# https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
+old_iso_639 = {"iw": "Hebrew",
+               "ji": "Yiddish"}
+
 
 # todo: add user option to remove words followed by :, e.g. when different users are speaking and their name is listed before their speech
 def generate_clean_solution(captions):
@@ -74,7 +76,7 @@ def map_initials_to_language_word(initials):
             elif len(initial) == 3:
                 name = (pycountry.languages.get(alpha_3=initial)).name
                 names.append((name, initial))
-            else: #for a specific country, etc.
+            else:  # for a specific country, etc.
                 # Chinese - zh-TW
                 # Portuguese - pt-PT (Portugal)
                 # Chinese - zh-Hans
@@ -83,13 +85,12 @@ def map_initials_to_language_word(initials):
                 print(name)
                 print(initial)
                 names.append((name + " " + initial, initial))
-             #todo: Moshe, how would you do this more correctly?
+            # todo: Moshe, how would you do this more correctly?
         except KeyError as err:
             print(err)
             names.append((initial, initial))
     print(names)
     return names
-
 
 # def get_initials(language):
 #     possible_prefix = "(Automatic) "
