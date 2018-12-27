@@ -17,5 +17,8 @@ pylint==1.8.2
 six==1.11.0
 virtualenv==16.1.0
 Werkzeug==0.14.1
+WTForms==2.2.1
 wrapt==1.10.11
 youtube-dl==2018.11.23
+Flask-WTF==0.14.2
+
