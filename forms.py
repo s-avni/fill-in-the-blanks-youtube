@@ -1,33 +1,12 @@
 from flask import flash
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField, IntegerField, RadioField
-from wtforms.validators import DataRequired, NumberRange
+from wtforms.validators import DataRequired, NumberRange, Regexp
 
 
 class YTLinkForm(FlaskForm):
-    link = StringField('Blah', validators=[DataRequired()])
+    link = StringField('Blah', validators=[DataRequired(), Regexp(regex='.*youtube.*', message="Please enter a YouTube Link")])
     submit = SubmitField('Continue')
-
-    def validate(self):
-        res = super(YTLinkForm, self).validate()
-        if res is False:
-            return res
-
-        # todo: it's not getting here, because it fals in StringValidation and False is returned
-        # todo: So the error is silent. I'd prefer it to be noticed
-        # todo: would be nice if there was the same alert as when we have nothing inputed
-        if self.link.data.isspace():
-            print("yes")
-            self.link.errors.append('Nothing entered')
-            flash('Please insert link')
-            return False
-
-        if not "youtube" in self.link.data:
-            self.link.errors.append('Not a YouTube link')
-            flash('Not a YouTube link')
-            return False
-
-        return True
 
 
 class WorksheetForm(FlaskForm):
@@ -38,7 +17,7 @@ class WorksheetForm(FlaskForm):
     submit = SubmitField('Generate Worksheet')
 
     def validate(self):
-        # print("!!!!!!!!")
+        # print("!!!!!!!!") #kept for nostalgic reasons, took me a while to realize the error here...
         # print(self.caption_lang.data)
         # for v, _ in self.caption_lang.choices:
         #     print(v)

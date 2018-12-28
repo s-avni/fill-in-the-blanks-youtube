@@ -14,6 +14,9 @@ from helpers import captions_from_yt_link, generate_fibd_response_given_language
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '239045863w09txjlfdktjew40693846elkrj634096834906'
 
+#todo: make templates suitable for phones (see Bootstrap columns info online)
+
+
 #todo: forms are definitely an overkill here. because the homepage is such a simple form and we are using
 #todo: form objects, then we have to create these objects for each redirect to the homepage
 #todo: either see how we avoid this, or get rid of form objects, although it was fun implementing them!
@@ -23,6 +26,11 @@ app.config['SECRET_KEY'] = '239045863w09txjlfdktjew40693846elkrj634096834906'
 
 #todo: i have used sessions, but that is probably overkill as well. to google: pros/cons of sessions
 
+def flash_errors(form):
+    for field, errors in form.errors.items():
+        for error in errors:
+            flash(str(error))
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     link = None
@@ -31,6 +39,9 @@ def index():
         link = form.link.data
         session['link'] = link
         return redirect(url_for('caption_selection'))
+    elif form.errors is not None:
+        flash_errors(form)
+        print(form.errors)
     return render_template('index.html', form=form, link=link)
 
 
@@ -65,6 +76,7 @@ def caption_selection():
         print(session['lang_initials'])
         return redirect(url_for('get_worksheet'))
     elif form.errors is not None:
+        flash_errors(form)
         print(form.errors)
     return render_template('page2.html', form=form, yt_link=link)
 
