@@ -1,5 +1,4 @@
-from flask import flash
-from flask_wtf import FlaskForm
+from flask_wtf import FlaskForm, RecaptchaField
 from wtforms import StringField, SubmitField, SelectField, IntegerField, RadioField
 from wtforms.validators import DataRequired, NumberRange, Regexp
 
@@ -7,6 +6,7 @@ from wtforms.validators import DataRequired, NumberRange, Regexp
 class YTLinkForm(FlaskForm):
     link = StringField('Blah', validators=[DataRequired(), Regexp(regex='.*youtube.*', message="Please enter a YouTube Link")])
     submit = SubmitField('Continue')
+    # recaptcha = RecaptchaField()
 
 
 class WorksheetForm(FlaskForm):
