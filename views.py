@@ -16,14 +16,6 @@ app.config['SECRET_KEY'] = '239045863w09txjlfdktjew40693846elkrj634096834906'
 
 #todo: make templates suitable for phones (see Bootstrap columns info online)
 
-
-#todo: forms are definitely an overkill here. because the homepage is such a simple form and we are using
-#todo: form objects, then we have to create these objects for each redirect to the homepage
-#todo: either see how we avoid this, or get rid of form objects, although it was fun implementing them!
-
-#todo: we are encountering some version of the get-post problem, where when we go back in the browser
-#todo: we are asked if we want to resubmit the form. we should deal with this gracefully
-
 #todo: i have used sessions, but that is probably overkill as well. to google: pros/cons of sessions
 
 def flash_errors(form):
@@ -33,8 +25,8 @@ def flash_errors(form):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    link = None
     form = YTLinkForm()
+    session["link"] = None
     if form.validate_on_submit():
         link = form.link.data
         session['link'] = link
@@ -42,29 +34,27 @@ def index():
     elif form.errors is not None:
         flash_errors(form)
         print(form.errors)
-    return render_template('index.html', form=form, link=link)
+    return render_template('index.html', form=form, link=session["link"]) #post-redirect-get pattern
 
 
 @app.route('/caption_selection', methods=['GET', 'POST'])
 def caption_selection():
-    link = session['link']
     form = WorksheetForm()
-    index_form = YTLinkForm()
     try:
-        captions = captions_from_yt_link(link.strip())
+        captions = captions_from_yt_link(session["link"].strip())
         print("!!")
         print(captions)
         form.caption_lang.choices = captions  # dynamic choices
     except youtube_dl.utils.DownloadError as err:
         print(type(err), str(err), traceback.format_exc())
+        response = redirect(url_for("index"))
         flash("Youtube download error - check the URL you provided")
-        response = render_template("index.html", form=index_form)
         return response
     except Exception as err:
         flash(str(err))
         print(type(err), str(err), traceback.format_exc())
         flash("An error occurred. Please email the site admins if this happens again.")
-        response = render_template("index.html", form=index_form)
+        response = redirect(url_for("index"))
         return response
     if form.validate_on_submit():
         session['output_type'] = form.output_type.data
@@ -78,12 +68,11 @@ def caption_selection():
     elif form.errors is not None:
         flash_errors(form)
         print(form.errors)
-    return render_template('page2.html', form=form, yt_link=link)
+    return render_template('page2.html', form=form, yt_link=session["link"]) #post-redirect-get pattern
 
 
 @app.route('/get_worksheet', methods=['GET'])
 def get_worksheet():
-    index_form = YTLinkForm()  # todo: yuck, to take care of
     try:
         name = '.'.join([session['name'], session['output_type']])
         return generate_fibd_response_given_language(session['link'],
@@ -93,11 +82,11 @@ def get_worksheet():
                                                      session['output_type'])
     except youtube_dl.utils.DownloadError as err:
         print(type(err), str(err), traceback.format_exc())
-        response = render_template("index.html", form=index_form)
+        response = redirect(url_for("index"))
         flash("A Youtube download error occured")
     except Exception as err:
         print(type(err), str(err), traceback.format_exc())
-        response = render_template("index.html", form=index_form)
+        response = redirect(url_for("index"))
         flash("An unexpected error occured")
     return response
 
@@ -134,8 +123,7 @@ def test_worksheet():
     except Exception as err:
         print(type(err), str(err), traceback.format_exc())
         flash("An unexpected error occured")
-        index_form = YTLinkForm()  # todo: yuck, to take care of
-        response = render_template("index.html", form=index_form)
+        response = redirect(url_for("index"))
     return response
 
 
@@ -148,4 +136,3 @@ def handle_bad_request(e):
 if __name__ == "__main__":
     app.run(debug=True)
 
-# todo: handle input errors gracefully!
