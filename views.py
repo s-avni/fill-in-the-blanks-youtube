@@ -13,12 +13,6 @@ from helpers import captions_from_yt_link, generate_fibd_response_given_language
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '239045863w09txjlfdktjew40693846elkrj634096834906'
-# app.config.update(
-#     RECAPTCHA_ENABLED = True,
-#     RECAPTCHA_PUBLIC_KEY = 'mypublickey',
-#     RECPATCHA_PRIVATE_KEY = 'myprivatekey',
-# )
-
 
 #todo: make templates suitable for phones (see Bootstrap columns info online)
 
