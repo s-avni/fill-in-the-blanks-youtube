@@ -6,7 +6,7 @@ import traceback
 
 import werkzeug
 import youtube_dl
-from flask import Flask, request, render_template, url_for, session, redirect, flash
+from flask import Flask, request, render_template, url_for, session, redirect, flash, send_from_directory
 
 from forms import YTLinkForm, WorksheetForm
 from helpers import captions_from_yt_link, generate_fibd_response_given_language, generate_fibd_response
@@ -42,7 +42,7 @@ def index():
 #no robots file acc to: https://www.seeme-media.com/robots-txt/
 @app.route('/sitemap.xml')
 def static_from_root():
-    return send_from_directory(app.static_folder, request.path[1:])
+    return send_from_directory(app.static_folder, "sitemap.xml")
 
 @app.route('/caption_selection', methods=['GET', 'POST'])
 def caption_selection():
