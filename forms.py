@@ -5,7 +5,7 @@ from wtforms.validators import DataRequired, NumberRange, Regexp
 
 
 class YTLinkForm(FlaskForm):
-    link = StringField('Blah', validators=[DataRequired(), Regexp(regex='.*youtube.*', message="Please enter a YouTube Link")])
+    link = StringField('Blah', validators=[DataRequired()]) #, Regexp(regex='.*youtube.*', message="Please enter a YouTube Link")])
     submit = SubmitField('Continue')
 
 
