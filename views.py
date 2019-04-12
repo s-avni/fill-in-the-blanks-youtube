@@ -37,6 +37,13 @@ def index():
     return render_template('index.html', form=form, link=session["link"]) #post-redirect-get pattern
 
 
+#https://stackoverflow.com/questions/14048779/with-flask-how-can-i-serve-robots-txt-and-sitemap-xml-as-static-files
+#@app.route('/robots.txt')
+#no robots file acc to: https://www.seeme-media.com/robots-txt/
+@app.route('/sitemap.xml')
+def static_from_root():
+    return send_from_directory(app.static_folder, request.path[1:])
+
 @app.route('/caption_selection', methods=['GET', 'POST'])
 def caption_selection():
     form = WorksheetForm()
