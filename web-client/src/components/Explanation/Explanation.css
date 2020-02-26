@@ -1,0 +1,9 @@
+.accordion-toggle {
+    /*border-color: #007bff;*/
+    /*@extend .border;*/
+    /*@extend .border-primary;*/
+}
+
+
+/*todo: https://stackoverflow.com/questions/31551393/define-a-custom-css-class-that-uses-bootstrap-classes
+   learn mixins...*/

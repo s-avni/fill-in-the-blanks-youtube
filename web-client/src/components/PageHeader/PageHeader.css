@@ -1,0 +1,20 @@
+.jumbotron {
+    background-color:#007bff;
+}
+
+.color-1 {
+    color : #ffaf2b;
+    font-weight: bold;
+}
+
+.color-2 {
+    color: #ff631a;
+    font-weight: bold;
+}
+
+.upper-left-corner {
+    position:absolute;
+    top:10px;
+    left:10px;
+}
+
