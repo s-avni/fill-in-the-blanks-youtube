@@ -78,7 +78,7 @@ def caption_selection():
     return render_template('page2.html', form=form, yt_link=session["link"]) #post-redirect-get pattern
 
 
-@app.route('/get_worksheet', methods=['GET'])
+@app.route('/get_worksheet', methods=['GET', 'POST'])
 def get_worksheet():
     try:
         name = '.'.join([session['name'], session['output_type']])

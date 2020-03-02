@@ -3,14 +3,11 @@ import {Form, Button, Row, Col} from "react-bootstrap";
 import './LinkForm.css';
 
 class LinkForm extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {link: "https://www.youtube.com/watch?v=MKlx1DLa9EA"};
-    }
+    state = {link: "https://www.youtube.com/watch?v=MKlx1DLa9EA"};
 
-    handleChange(event) {
+    handleChange = (event) =>  {
         this.setState({link:event.target.value});
-    }
+    };
 
     handleSubmit = () => {
         this.props.handleLinkSubmit(this.state.link);
