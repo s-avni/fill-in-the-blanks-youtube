@@ -21,9 +21,6 @@ export default class ModalImageButton extends React.Component {
 
                 <Modal show={this.state.show} onHide={this.handleClose}
                        animation={false} centered size="lg">
-                    {/*<Modal.Header closeButton>*/}
-                    {/*    <Modal.Title>Modal heading</Modal.Title>*/}
-                    {/*</Modal.Header>*/}
                     <Modal.Body>
                         <Image src="/Example_Sheet.png"
                                alt="example exercise sheet image"
@@ -35,8 +32,6 @@ export default class ModalImageButton extends React.Component {
                             containing the complete text.
                         </p>
                     </Modal.Body>
-                    {/*<Modal.Footer>*/}
-                    {/*</Modal.Footer>*/}
                 </Modal>
             </>
         );

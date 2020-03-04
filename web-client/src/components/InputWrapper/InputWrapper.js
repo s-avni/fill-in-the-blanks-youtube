@@ -1,8 +1,10 @@
 import React from "react";
 import {LinkForm} from "../LinkForm/LinkForm";
 import OptionsForm from "../OptionsForm/OptionsForm";
+import './InputWrapper.css'; //todo: why doesn't vertical spacing work?
 
 class InputWrapper extends React.Component {
+    //todo: get rid of state?
     state = {
         showLanguageOptions: false,
         error: null,
@@ -70,12 +72,17 @@ class InputWrapper extends React.Component {
             this.setState({
                 showLanguageOptions: true,
                 languageOptions: data.langs
-            })
+            });
+            localStorage.setItem('link', this.state.url);
         })
         .catch((error) => {
             this.setState({error: error, showLanguageOptions: false});
             console.error('Error:', error);
         });
+
+    handleLinkError = (errorString) => {
+        this.setState({error: errorString})
+    };
 
     handleLinkSubmit = (url) => {
         //https://stackoverflow.com/questions/3452546/how-do-i-get-the-youtube-video-id-from-a-url
@@ -101,10 +108,12 @@ class InputWrapper extends React.Component {
     render() {
         return (
             <>
-                <LinkForm handleLinkSubmit={this.handleLinkSubmit}/>
+                <LinkForm handleLinkSubmit={this.handleLinkSubmit}
+                          handleLinkError={this.handleLinkError}/>
                 { this.state.error &&
                 <p className="error"> { this.state.error } </p> }
-                <OptionsForm show={this.state.showLanguageOptions}
+                <OptionsForm className="bottom5"
+                             show={this.state.showLanguageOptions}
                              languageOptions={this.state.languageOptions}
                              handleOptionsSubmit={this.handleOptionsSubmit}
                 />

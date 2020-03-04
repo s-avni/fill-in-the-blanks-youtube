@@ -2,7 +2,7 @@ import React from "react";
 import {Button, Form} from "react-bootstrap";
 
 class OptionsForm extends React.Component {
-    state = {n: 3, lang: null};
+    state = {n: 3, lang: ""};
 
     handleNChange = (event) => {
         this.setState({n: event.target.value});
@@ -12,8 +12,16 @@ class OptionsForm extends React.Component {
         this.setState({lang: event.target.value});
     };
 
+    componentDidMount() {
+        const lang = localStorage.getItem('lang') ? localStorage.getItem('lang') : "";
+        const n = localStorage.getItem('n') ? localStorage.getItem('n') : 3;
+        this.setState({ lang: lang, n : n });
+    }
+
     handleSubmit = () => {
         const lang = this.state.lang ? this.state.lang : this.props.languageOptions[0];
+        localStorage.setItem('lang', lang);
+        localStorage.setItem('n', this.state.n);
         this.props.handleOptionsSubmit(this.state.n, lang);
     };
 
@@ -30,7 +38,7 @@ class OptionsForm extends React.Component {
                 this.handleSubmit()
             }}>
                 <Form.Group>
-                    <Form.Label>Skip every n</Form.Label>
+                    <Form.Label>Skip every n words: </Form.Label>
                     <Form.Control as="select" value={this.state.n}
                                   onChange={this.handleNChange}>
                         {numbers.map((num) => <option key={num}
@@ -38,9 +46,9 @@ class OptionsForm extends React.Component {
                     </Form.Control>
                 </Form.Group>
                 <Form.Group>
-                    <Form.Label>Select language</Form.Label>
+                    <Form.Label>Select language: </Form.Label>
                     <Form.Control as="select"
-                                  defaultValue={this.props.languageOptions[0]}
+                                  value={this.state.lang}
                                   onChange={this.handleLangChange}>
                         {langs.map((language) => <option key={language}
                                                          value={language}>{language}</option>)}

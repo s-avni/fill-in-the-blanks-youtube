@@ -3,8 +3,8 @@ import {Button, Collapse, Card, Image, Modal} from "react-bootstrap";
 import {useState} from 'react';
 import ModalImageButton from "../ModalImage/ModalImage";
 
-// import './Explanation.css';
-
+//todo: convert to function?
+//todo: convert the modal to another component?
 class InstructionButton extends React.Component {
     state = {show: false};
 
@@ -25,9 +25,6 @@ class InstructionButton extends React.Component {
 
                 <Modal show={this.state.show} onHide={this.handleClose}
                        animation={false} centered>
-                    {/*<Modal.Header closeButton>*/}
-                    {/*    <Modal.Title>Modal heading</Modal.Title>*/}
-                    {/*</Modal.Header>*/}
                     <Modal.Body>
                         <ol className="text-left" id="instruction-text">
                             <li>Choose the video you want to use for your
@@ -43,8 +40,6 @@ class InstructionButton extends React.Component {
                             </li>
                         </ol>
                     </Modal.Body>
-                    {/*<Modal.Footer>*/}
-                    {/*</Modal.Footer>*/}
                 </Modal>
             </>
         );
